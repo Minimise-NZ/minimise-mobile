@@ -8,9 +8,9 @@
     <title><%= htmlWebpackPlugin.options.productName %></title>
     <base href="<%= htmlWebpackPlugin.options.appBase %>">
 
-    <link rel="icon" href="statics/quasar-logo.png" type="image/x-icon">
-    <link rel="icon" type="image/png" sizes="32x32" href="statics/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="statics/icons/favicon-16x16.png">
+    <link rel="icon" href="statics/minimise-256x256.png" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="statics/icons/minimise-emblem-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="statics/icons/minimise-favicon-16x16.png">
 
     <% if (htmlWebpackPlugin.options.ctx.mode.pwa) { %>
     <!-- Add to home screen for Android and modern mobile browsers -->
@@ -20,9 +20,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="<%= htmlWebpackPlugin.options.pwaManifest.background_color %>">
     <meta name="apple-mobile-web-app-title" content="<%= htmlWebpackPlugin.options.pwaManifest.name %>">
-    <link rel="apple-touch-icon" href="statics/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" href="statics/icons/minimise-152x152.png">
     <!-- Add to home screen for Windows -->
-    <meta name="msapplication-TileImage" content="statics/icons/ms-icon-144x144.png">
+    <meta name="msapplication-TileImage" content="statics/icons/minimise-144x144.png">
     <meta name="msapplication-TileColor" content="<%= htmlWebpackPlugin.options.pwaManifest.background_color %>">
     <% } %>
 
