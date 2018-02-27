@@ -3,6 +3,7 @@
 module.exports = function (ctx) {
   return {
     plugins: [
+      'vee-validate',
     ],
     css: [
       'app.styl'
@@ -58,13 +59,14 @@ module.exports = function (ctx) {
         'QItemMain',
         'QItemSide',
         'QInput',
-        'QField'
+        'QField',
+        'QModal'
       ],
       directives: [
         'Ripple'
       ],
       plugins: [
-        'Notify'
+        'Dialog'
       ]
     },
     // animations: 'all' --- includes all animations

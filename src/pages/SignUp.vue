@@ -6,12 +6,35 @@
     <div class="headings">
       <div class="q-display-1">m&#305;n&#305;m&#305;se</div>
     </div>
-    <div class="user-form" >
-      <q-field helper="Please contact your administrator if you need to confirm your details">
-        <q-input v-if="!found" v-model="email" type="text" :before="[{icon: 'mail'}]" placeholder=' Please enter email address' />
+    <div class="user-form" id="form">
+      <q-field v-if="!found" helper="Please contact your administrator if you need to confirm your details">
+        <q-input v-model="email" type="email" :before="[{icon: 'mail'}]" placeholder=' Please enter email address' v-validate="'required|email'"/>
       </q-field>
-      <q-input v-if="found" v-model="password" type="text" :before="[{icon: 'lock'}]" placeholder=' Password' />
-      <q-input v-if="found" v-model="confirmPassword" type="text" :before="[{icon: 'lock'}]" placeholder=' Confirm Password' />
+      <q-field>
+        <q-input
+          name="password"
+          v-validate="'required|min:6'"
+          v-if="found"
+          v-model="password"
+          data-vv-delay="2000"
+          type="password"
+          :before="[{icon: 'lock'}]"
+          placeholder=' Password' />
+          <span class="alert-text" v-show="errors.has('password')">{{ errors.first('password') }}</span>
+      </q-field>
+      <q-field>
+        <q-input
+          name="confirmPassword"
+          v-validate="'required|confirmed:password'"
+          v-if="found"
+          v-model="confirmPassword"
+          type="password"
+          data-vv-delay="3000"
+          data-vv-as="password"
+          :before="[{icon: 'lock'}]"
+          placeholder=' Confirm Password' />
+        <span class="alert-text" v-show="errors.has('confirmPassword')">{{ errors.first('confirmPassword') }}</span>
+      </q-field>
     </div>
     <div class="buttons">
       <q-btn v-if="!found" color="primary" rounded big @click="findUser">Next</q-btn>
@@ -29,23 +52,52 @@ export default {
       name: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      user: {}
     }
   },
   methods: {
     findUser () {
       // find user details in firestore
-      this.$store.dispatch('master/findUser', this.email)
-        .then((user) => {
-          console.log('user found', user)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+      this.$validator.validateAll().then(async (valid) => {
+        if (!valid) {
+          this.$q.dialog({
+            title: 'Alert',
+            message: 'Please enter a valid email address'
+          })
+          return
+        }
+        try {
+          let user = await this.$store.dispatch('findUser', this.email)
+          this.user = user
+          this.found = true
+        } catch (error) {
+          console.log(error.message)
+          this.$q.dialog({
+            title: 'Alert',
+            message: error.message
+          })
+        }
+      })
     },
     signup () {
       // create new user
-      console.log('creating new user')
+      this.$validator.validateAll().then(async (valid) => {
+        if (!valid) { return }
+        try {
+          // create new user in firebase
+          let uid = await this.$store.dispatch('signUp', {email: this.email, password: this.password})
+          // update userProfile with uid
+          this.user.uid = uid
+          await this.$store.dispatch('updateCurrentUser', this.user)
+          await this.$store.dispatch('getUser')
+          // let companyType = this.user.companyType
+          // go to location page
+          // this.$router.push()
+        } catch (err) {
+          console.log(err)
+        }
+      })
     }
   }
 }
@@ -70,7 +122,7 @@ export default {
   }
 
   .user-form {
-    padding-top: 10vh;
+    padding-top: 3vh;
   }
 
   .q-field {
@@ -85,6 +137,15 @@ export default {
 
   a {
     display: block;
+  }
+
+  span {
+    float: right;
+    padding-top: 10px;
+  }
+  .alert-text {
+    font-size: 0.7rem;
+    color: red;
   }
 
 </style>

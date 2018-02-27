@@ -10,8 +10,8 @@
     <div class="buttons">
       <router-link to='/login'>
         <q-btn color="primary" rounded big>Log In</q-btn>
-        <router-link to='/signup'>New User</router-link>
       </router-link>
+      <router-link to='/signup'>New User</router-link>
     </div>
   </div>
 </template>

@@ -12,7 +12,11 @@
   },
   "dependencies": {
     "@firebase/app": "^0.1.10",
-    "@firebase/firestore": "^0.3.4"
+    "@firebase/firestore": "^0.3.4",
+    "firebase": "^4.10.1",
+    "firebase-auth": "^0.1.2",
+    "vee-validate": "^2.0.4",
+    "vuelidate": "^0.6.1"
   },
   "devDependencies": {
     "babel-eslint": "8.2.1",
