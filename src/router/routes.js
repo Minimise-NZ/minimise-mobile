@@ -21,6 +21,14 @@ export default [
     path: '/signup',
     component: () => import('pages/SignUp')
   },
+  {
+    path: '/location',
+    component: () => import('pages/Location')
+  },
+  {
+    path: '/hazards',
+    component: () => import('pages/Hazards')
+  },
   { // Always leave this as last one
     path: '*',
     component: () => import('pages/404')

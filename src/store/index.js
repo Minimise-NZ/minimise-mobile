@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
-import {firestore} from './firestore'
+import {firestore} from '../firestore'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
@@ -11,7 +12,9 @@ const store = new Vuex.Store({
     uid: '',
     user: {},
     companyKey: '',
-    company: ''
+    company: '',
+    jobs: [],
+    jobSite: {}
   },
   mutations: {
     setUserKey (state, payload) {
@@ -28,6 +31,12 @@ const store = new Vuex.Store({
     },
     setCompany (state, payload) {
       state.company = payload
+    },
+    setJobs (state, payload) {
+      state.jobs = payload
+    },
+    setJob (state, payload) {
+      state.jobSite = payload
     }
   },
   actions: {
@@ -123,27 +132,13 @@ const store = new Vuex.Store({
       })
       return promise
     },
-    getCompany ({commit, state}) {
-      let promise = new Promise((resolve, reject) => {
-        firestore.collection('companies').doc(state.companyKey)
-          .get()
-          .then((doc) => {
-            let company = doc.data()
-            commit('setCompany', company)
-            resolve()
-          })
-          .catch((error) => {
-            console.log(error)
-            reject(error)
-          })
-      })
-      return promise
-    },
     getJobs ({commit, state}) {
       // get all jobs in progress that this worker is assigned to
-      firestore.collection('jobSites').where('approved', '==', state.companyKey).where('open', '==', true)
+      let approvedkey = 'approved.' + state.companyKey
+      firestore.collection('jobSites').where(approvedkey, '==', true)
         .get()
         .then((snapshot) => {
+          console.log(snapshot)
           let jobs = []
           snapshot.forEach((doc) => {
             console.log(doc.data())
@@ -159,7 +154,6 @@ const store = new Vuex.Store({
               date: job.date,
               notifiable: job.notifiable,
               info: job.info,
-              status: job.status,
               medical: job.medical
             })
           })
@@ -168,10 +162,17 @@ const store = new Vuex.Store({
         .catch((error) => {
           console.log('Error getting documents: ', error)
         })
+    },
+    setJobSite ({commit}, payload) {
+      let job = payload
+      commit('setJob', job)
     }
   },
   getters: {
-  }
+    jobs: (state) => state.jobs,
+    jobSite: (state) => state.jobSite
+  },
+  plugins: [createPersistedState()]
 })
 
 export default store

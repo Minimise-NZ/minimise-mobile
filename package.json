@@ -16,7 +16,8 @@
     "firebase": "^4.10.1",
     "firebase-auth": "^0.1.2",
     "vee-validate": "^2.0.4",
-    "vuelidate": "^0.6.1"
+    "vuelidate": "^0.6.1",
+    "vuex-persistedstate": "^2.4.2"
   },
   "devDependencies": {
     "babel-eslint": "8.2.1",

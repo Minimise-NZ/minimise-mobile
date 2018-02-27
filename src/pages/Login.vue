@@ -42,7 +42,7 @@ export default {
               let user = await this.$store.dispatch('getUser')
               this.$store.dispatch('getJobs')
               console.log('user logged in', user)
-              // this.$router.push('/' + companyType)
+              this.$router.push('/location')
             })
         } catch (error) {
           this.$q.dialog({
