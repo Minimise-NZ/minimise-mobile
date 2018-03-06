@@ -62,13 +62,15 @@ module.exports = function (ctx) {
         'QInput',
         'QField',
         'QModal',
-        'QScrollArea'
+        'QScrollArea',
+        'QOptionGroup'
       ],
       directives: [
         'Ripple'
       ],
       plugins: [
-        'Dialog'
+        'Dialog',
+        'Notify'
       ]
     },
     // animations: 'all' --- includes all animations

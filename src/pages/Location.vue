@@ -1,15 +1,15 @@
 <template>
   <div>
-    <q-toolbar color="primary" class="shadow-2">
+    <q-toolbar class="shadow-2" color="teal-5">
       <q-toolbar-title>
         Site Location
       </q-toolbar-title>
     </q-toolbar>
     <div class="container">
       <q-list highlight>
-        <q-list-header >Please choose your job site</q-list-header>
+        <q-list-header>Please select your job site</q-list-header>
         <q-scroll-area style="width: 100%; height: 80vh;">
-          <q-item v-for="job in jobs" :key="job.id" @click="setLocation(job)" link>
+          <q-item @click.native="setLocation(job)" v-for="job in jobs" :key="job.id">
             <q-item-side icon="home"></q-item-side>
             <q-item-main>
               <q-item-tile label>{{job.address}}</q-item-tile>
@@ -35,8 +35,7 @@ export default {
   },
   methods: {
     setLocation (job) {
-      this.$store.dispatch('setJobSite', job)
-      console.log(job)
+      this.$store.commit('setJob', job)
       this.$router.push('/hazards')
     }
   }
@@ -45,13 +44,22 @@ export default {
 
 <style scoped>
 
+  .q-list {
+    border: none;
+  }
+
   .q-list-header {
-    background-color: #149ba7;
+    background-color: #027be3;
     color: white;
+    margin-top: 8px;
+  }
+
+  .q-item {
+    border-bottom: 0.5px solid lightgray;
   }
 
   .q-item-main {
-    padding-top: 10px;
+    padding: 10px 0;
   }
 
 </style>

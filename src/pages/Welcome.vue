@@ -18,6 +18,10 @@
 
 <script>
 export default {
+  beforeMount () {
+    this.$store.commit('clearStore')
+    localStorage.clear()
+  }
 }
 </script>
 

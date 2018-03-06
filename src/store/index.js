@@ -12,11 +12,22 @@ const store = new Vuex.Store({
     uid: '',
     user: {},
     companyKey: '',
-    company: '',
+    company: {},
     jobs: [],
-    jobSite: {}
+    jobSite: {},
+    siteHazards: []
   },
   mutations: {
+    clearStore (state) {
+      state.uid = ''
+      state.userKey = ''
+      state.user = {}
+      state.companyKey = ''
+      state.company = {}
+      state.jobs = []
+      state.jobSite = {}
+      state.siteHazards = []
+    },
     setUserKey (state, payload) {
       state.userKey = payload
     },
@@ -37,6 +48,12 @@ const store = new Vuex.Store({
     },
     setJob (state, payload) {
       state.jobSite = payload
+    },
+    setAllHazards (state, payload) {
+      state.allHazards = payload
+    },
+    setSiteHazards (state, payload) {
+      state.siteHazards = payload
     }
   },
   actions: {
@@ -117,6 +134,21 @@ const store = new Vuex.Store({
       })
       return promise
     },
+    getCompany ({commit, state}) {
+      let promise = new Promise((resolve, reject) => {
+        firestore.collection('companies').doc(state.companyKey)
+          .get()
+          .then((doc) => {
+            let company = doc.data()
+            commit('setCompany', company)
+            resolve()
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+      return promise
+    },
     updateCurrentUser ({state}, payload) {
       let promise = new Promise((resolve, reject) => {
         firestore.collection('users').doc(state.userKey)
@@ -162,15 +194,12 @@ const store = new Vuex.Store({
         .catch((error) => {
           console.log('Error getting documents: ', error)
         })
-    },
-    setJobSite ({commit}, payload) {
-      let job = payload
-      commit('setJob', job)
     }
   },
   getters: {
     jobs: (state) => state.jobs,
-    jobSite: (state) => state.jobSite
+    jobSite: (state) => state.jobSite,
+    allHazards: (state) => state.company.hazards
   },
   plugins: [createPersistedState()]
 })

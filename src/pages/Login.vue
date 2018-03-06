@@ -41,6 +41,7 @@ export default {
             .then(async () => {
               let user = await this.$store.dispatch('getUser')
               this.$store.dispatch('getJobs')
+              this.$store.dispatch('getCompany')
               console.log('user logged in', user)
               this.$router.push('/location')
             })
