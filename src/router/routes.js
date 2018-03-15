@@ -29,6 +29,28 @@ export default [
     path: '/hazards',
     component: () => import('pages/Hazards')
   },
+  {
+    path: '/home',
+    component: () => import('layouts/default'),
+    children: [
+      {
+        path: '/',
+        component: () => import('pages/SafetyPlan')
+      },
+      {
+        path: 'emergency',
+        component: () => import('pages/EmergencyInfo')
+      },
+      {
+        path: 'hazardRegister',
+        component: () => import('pages/HazardRegister')
+      },
+      {
+        path: 'incident',
+        component: () => import('pages/Incident')
+      }
+    ]
+  },
   { // Always leave this as last one
     path: '*',
     component: () => import('pages/404')

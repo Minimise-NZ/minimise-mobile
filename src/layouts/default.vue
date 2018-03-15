@@ -1,27 +1,18 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHr LpR lFf">
     <q-layout-header>
-      <q-toolbar color="primary" glossy>
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        >
+      <q-toolbar :color='header.color' class="shadow-2">
+        <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen">
           <q-icon name="menu" />
         </q-btn>
-
         <q-toolbar-title>
-          Quasar App
-          <div slot="subtitle">Running on Quasar v{{ $q.version }}</div>
+          {{header.title}}
+          <div slot="subtitle">{{jobSite.address}}</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-layout-header>
 
-    <q-layout-drawer
-      v-model="leftDrawerOpen"
-      content-class="bg-grey-2"
-    >
+    <q-layout-drawer v-model="leftDrawerOpen" content-class="bg-grey-2">
       <q-list
         no-border
         link
@@ -66,6 +57,14 @@ export default {
     return {
       leftDrawerOpen: false
     }
+  },
+  computed: {
+    header () {
+      return this.$store.getters.header
+    }
+  },
+  beforeMount () {
+    this.jobSite = this.$store.getters.jobSite
   },
   methods: {
     openURL

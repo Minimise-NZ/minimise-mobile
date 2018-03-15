@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import * as firebase from 'firebase'
 import {firestore} from '../firestore'
 import createPersistedState from 'vuex-persistedstate'
+// import moment from 'moment'
 
 Vue.use(Vuex)
 
@@ -15,6 +16,10 @@ const store = new Vuex.Store({
     company: {},
     jobs: [],
     jobSite: {},
+    header: {
+      title: '',
+      color: ''
+    },
     siteHazards: []
   },
   mutations: {
@@ -27,6 +32,9 @@ const store = new Vuex.Store({
       state.jobs = []
       state.jobSite = {}
       state.siteHazards = []
+    },
+    setHeader (state, payload) {
+      state.header = payload
     },
     setUserKey (state, payload) {
       state.userKey = payload
@@ -57,6 +65,10 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    updateHeader ({commit}, payload) {
+      let header = payload
+      commit('setHeader', header)
+    },
     signUp ({commit}, payload) {
       // create a new user in firebase
       let promise = new Promise((resolve, reject) => {
@@ -180,9 +192,11 @@ const store = new Vuex.Store({
               address: job.address,
               principal: job.principalName,
               projectManager: job.pm,
+              pmKey: job.pmKey,
               PMcontact: job.pmPhone,
               HSEManager: job.hse,
               HSEcontact: job.hsePhone,
+              hseKey: job.hseKey,
               date: job.date,
               notifiable: job.notifiable,
               info: job.info,
@@ -197,9 +211,13 @@ const store = new Vuex.Store({
     }
   },
   getters: {
+    user: (state) => state.user,
+    userKey: (state) => state.userKey,
     jobs: (state) => state.jobs,
     jobSite: (state) => state.jobSite,
-    allHazards: (state) => state.company.hazards
+    allHazards: (state) => state.company.hazards,
+    siteHazards: (state) => state.siteHazards,
+    header: (state) => state.header
   },
   plugins: [createPersistedState()]
 })

@@ -11,12 +11,15 @@ export default {
 </script>
 
 <style>
+  * {
+    font-family: 'Raleway', sans-serif;
+  }
 
   #q-app {
     height: 100vh;
   }
   .container{
-    margin: 0 3vh;
+    margin: 0 1.5vh;
   }
 
   .login-container{
@@ -26,7 +29,10 @@ export default {
 
   .q-toolbar-title {
     font-size: 1.2rem;
-    font-family: 'Roboto', sans-serif;
+  }
+
+  .q-list-header {
+    border-radius: 5px;
   }
 
   .buttons {

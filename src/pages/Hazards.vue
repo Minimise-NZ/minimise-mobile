@@ -21,9 +21,9 @@
         </q-scroll-area>
       </q-list>
     </div>
-    <q-btn class="fixed shadow-8" style="right: 18px; bottom: 18px" round color="positive" icon="done_all" @click="saveSiteHazards" replace/>
+    <q-btn class="fixed shadow-8" size="lg" style="right: 18px; bottom: 18px" round color="positive" icon="done_all" @click="saveSiteHazards" replace/>
     <q-modal v-model="openModal">
-      <q-toolbar color="green-6" class="shadow-2">
+      <q-toolbar color="deep-orange-7" class="shadow-2">
         <q-toolbar-title style="padding-left: 25px">{{hazard.name}}</q-toolbar-title>
       </q-toolbar>
       <div class="container">
@@ -39,16 +39,16 @@
                 v-model="control.status"
                 inline
                 :options="[
-                  { label: 'Yes', value: 'controlled', color: 'primary' },
-                  { label: 'No', value: 'uncontrolled', color: 'red' },
+                  { label: 'Yes', value: 'Controlled', color: 'primary' },
+                  { label: 'No', value: 'Uncontrolled', color: 'red' },
                   { label: 'n/a', value: 'n/a', color: 'grey'}
                 ]"/>
               </q-item-main>
             </q-item>
           </q-scroll-area>
         </q-list>
-        <q-btn class="fixed shadow-8" small style="left: 18px; bottom: 18px" round color="negative" icon="clear" @click="cancel"/>
-        <q-btn class="fixed shadow-8" small style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="saveHazard"/>
+        <q-btn class="fixed shadow-8" size="md" style="left: 18px; bottom: 18px" round color="negative" icon="clear" @click="cancel"/>
+        <q-btn class="fixed shadow-8" size="md" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="saveHazard"/>
       </div>
     </q-modal>
   </div>
@@ -114,7 +114,7 @@ export default {
   }
 
   .q-list-header {
-    background-color: #027be3;
+    background-color: #979797;
     color: white;
     margin-top: 8px;
   }
