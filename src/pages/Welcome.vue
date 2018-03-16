@@ -18,9 +18,14 @@
 
 <script>
 export default {
+  data () {
+    return {
+      loggedIn: false,
+      signedIn: false
+    }
+  },
   beforeMount () {
-    this.$store.commit('clearStore')
-    localStorage.clear()
+    // let user = this.$store.getters.userKey
   }
 }
 </script>
