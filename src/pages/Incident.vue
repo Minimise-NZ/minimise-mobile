@@ -1,8 +1,15 @@
 <template>
   <div>
+    <q-modal style="margin-top: 0" v-model="showModal" minimized :content-css="{padding: '50px'}">
+      <div class="q-display-1 q-mb-md">Incident submitted</div>
+      <p>Thank you for reporting this incident</p>
+      <q-btn color="primary" v-close-overlay label="Close"  @click="$router.push('/home')" replace />
+    </q-modal>
     <div class="container">
       <q-scroll-area style="width: 100%; height: 75vh;">
-        <div class="row">Please enter incident details</div>
+        <div class="section-header">
+            <p class="header-text">Please enter incident details</p>
+          </div>
         <div class="row">
           <q-select
             required
@@ -16,7 +23,7 @@
             required
             v-model="incident.description"
             type="textarea"
-            float-label="Description of incident"
+            float-label="Please describe what happened"
             rows="5"
           />
         </div>
@@ -51,7 +58,7 @@
         </div>
       </q-scroll-area>
     </div>
-    <q-toolbar color="cyan-9" class="footer shadow-2">
+    <q-toolbar color="cyan-8" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
       <q-btn class="fixed shadow-8" size="lg" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="submit"/>
     </q-toolbar>
@@ -59,35 +66,24 @@
 </template>
 
 <script>
-import moment from 'moment'
 export default {
   data () {
     return {
+      showModal: false,
       incident: {
-        type: '',
-        description: '',
-        plantDamage: '',
-        injuryDescription: '',
-        corrective: '',
-        actionOwner: {
-          key: '',
-          name: ''
-        },
         address: '',
         cause: '',
         company: '',
-        date: moment(),
+        corrective: '',
+        description: '',
         escalate: false,
-        injury: false,
-        loggedBy: {
-          key: '',
-          name: ''
-        },
+        injuryDescription: '',
         open: true,
-        reportedBy: ''
+        plantDamage: '',
+        type: ''
       },
       jobSite: {},
-      header: { title: 'Report an Incident', color: 'cyan-9' },
+      header: { title: 'Report an Incident', color: 'cyan-8' },
       incidentTypes: [
         { label: 'Near Miss', value: 'Near Miss' },
         { label: 'Minor Harm', value: 'Minor Harm' },
@@ -102,6 +98,13 @@ export default {
     },
     userKey () {
       return this.$store.getters.userKey
+    },
+    injury () {
+      if (this.incident.type === 'Minor Harm' || this.incident.type === 'Serious Harm') {
+        return true
+      } else {
+        return false
+      }
     },
     plant () {
       if (this.incident.type === 'Plant Damage') {
@@ -120,15 +123,13 @@ export default {
           position: 'bottom',
           timeout: 1000
         })
-      } else if (this.incident.type === 'Minor Harm' || this.incident.type === 'Serious Harm') {
-        if (this.incident.injury === '') {
-          this.$q.notify({
-            message: 'Please provide details of injury',
-            position: 'bottom',
-            timeout: 1000
-          })
-        }
-      } else if (this.incident.type === 'Plant Damage' && this.incident.damage === '') {
+      } else if ((this.incident.type === 'Minor Harm' || this.incident.type === 'Serious Harm') && (this.incident.injuryDescription === '')) {
+        this.$q.notify({
+          message: 'Please provide details of injury',
+          position: 'bottom',
+          timeout: 1000
+        })
+      } else if (this.incident.type === 'Plant Damage' && this.incident.plantDamage === '') {
         this.$q.notify({
           message: 'Please provide details of plant damage',
           position: 'bottom',
@@ -136,6 +137,21 @@ export default {
         })
       } else {
         // save to firestore
+        let incident = this.incident
+        incident.actionOwner = {key: this.jobSite.pmKey, name: this.jobSite.projectManager}
+        incident.address = this.jobSite.address
+        incident.company = this.jobSite.principalKey
+        incident.injury = this.injury
+        incident.loggedBy = {key: this.userKey, name: this.user.name}
+        incident.reportedBy = this.user.name
+        this.$store.dispatch('newIncident', incident)
+          .then((response) => {
+            console.log(response)
+            this.showModal = true
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       }
     }
   },
@@ -155,8 +171,21 @@ export default {
     margin-top: 10px;
   }
 
+  .section-header {
+    background-color: #10698ac4;
+    border-radius: 5px;
+  }
+
+  .header-text {
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+  }
+
   .row {
     margin-top: 10px;
+    padding-left: 5px;
   }
 
  .footer {

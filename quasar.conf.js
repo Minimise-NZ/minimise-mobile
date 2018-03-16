@@ -72,7 +72,8 @@ module.exports = function (ctx) {
         'QCardActions'
       ],
       directives: [
-        'Ripple'
+        'Ripple',
+        'CloseOverlay'
       ],
       plugins: [
         'Dialog',

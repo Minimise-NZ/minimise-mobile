@@ -7,25 +7,62 @@
       <div class="q-display-2">m&#305;n&#305;m&#305;se</div>
       <div class="q-subheading">Simple Safety on Construction Sites</div>
     </div>
-    <div class="buttons">
+    <div class="buttons" v-if="loggedIn === false">
       <router-link to='/login'>
         <q-btn color="primary" rounded big>Log In</q-btn>
       </router-link>
       <router-link to='/signup'>New User</router-link>
     </div>
+    <div class="buttons" v-if="signedIn === true">
+      <p style="margin-bottom: 5px">You are signed in to</p>
+      <p style="margin-bottom: 25px"><strong>{{jobSite.address}}</strong></p>
+      <router-link to='/home'>
+        <q-btn color="primary" rounded big>View Safety Plan</q-btn>
+      </router-link>
+      <q-btn color="primary" @click="signOut" rounded big>Sign out</q-btn>
+    </div>
+     <div class="buttons" v-if="signedIn === false && loggedIn === true">
+      <router-link to='/location'>
+        <q-btn color="primary" rounded big>New Job Site</q-btn>
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   data () {
     return {
-      loggedIn: false,
-      signedIn: false
+    }
+  },
+  computed: {
+    loggedIn () {
+      let userKey = this.$store.getters.userKey
+      if (userKey === '') {
+        return false
+      } else {
+        return true
+      }
+    },
+    signedIn () {
+      if (_.isEmpty(this.jobSite)) {
+        return false
+      } else {
+        return true
+      }
+    },
+    jobSite () {
+      return this.$store.getters.jobSite
     }
   },
   beforeMount () {
-    // let user = this.$store.getters.userKey
+    this.$store.dispatch('logout')
+  },
+  methods: {
+    signOut () {
+      // sign off jobSite
+    }
   }
 }
 </script>

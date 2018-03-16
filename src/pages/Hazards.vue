@@ -43,6 +43,9 @@
                   { label: 'No', value: 'Uncontrolled', color: 'red' },
                   { label: 'n/a', value: 'n/a', color: 'grey'}
                 ]"/>
+                <q-item-tile v-if="control.status === 'Uncontrolled'">
+                  <q-input v-model="control.corrective" style="padding-top:15px" placeholder="Corrective action/Workaround" type="textarea" rows="2"/>
+                </q-item-tile>
               </q-item-main>
             </q-item>
           </q-scroll-area>
@@ -76,6 +79,25 @@ export default {
       this.index = index
       this.hazard = hazard
       this.openModal = true
+      setTimeout(this.notifications, 1000)
+    },
+    notifications () {
+      if (this.hazard.worksafe === true) {
+        this.$q.dialog({
+          title: 'Worksafe Notification Required',
+          message: 'Please confirm that you have notified Worksafe and have a copy of the notification.',
+          ok: 'Agree',
+          cancel: 'Disagree'
+        }).then(() => {
+          this.hazard.worksafeNotification = 'confirmed'
+          // if a task analysis is required, open task modal
+          if (this.hazard.taskAnalysis === true) {
+            // open modal
+          }
+        }).catch(() => {
+          this.$q.notify('Worksafe notification is required. You are not permitted to start this work activity')
+        })
+      }
     },
     saveHazard () {
       // check controls have been checked
@@ -88,6 +110,16 @@ export default {
           })
           return
         }
+        if (control.status === 'Uncontrolled') {
+          if (!control.corrective) {
+            this.$q.notify({
+              message: 'Please enter corrective action for uncontrolled hazards',
+              position: 'bottom',
+              timeout: 1000
+            })
+            return
+          }
+        }
       }
       // add hazard to array ready to be written to database
       this.selectedHazards.push(this.hazard)
@@ -96,6 +128,15 @@ export default {
       this.openModal = false
     },
     saveSiteHazards () {
+      // check that hazards are not empty
+      if (this.selectedHazards.length === 0) {
+        this.$q.notify({
+          message: 'Oops. You have not selected any hazards',
+          position: 'bottom',
+          timeout: 1000
+        })
+        return
+      }
       // save hazard register to store
       this.$store.commit('setSiteHazards', this.selectedHazards)
       this.$router.push('/home')
@@ -114,7 +155,7 @@ export default {
   }
 
   .q-list-header {
-    background-color: #979797;
+    background-color: #c51d1dc2;
     color: white;
     margin-top: 8px;
   }

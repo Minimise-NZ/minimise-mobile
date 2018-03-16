@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-toolbar class="shadow-2" color="primary">
+    <q-toolbar class="shadow-2" color="deep-purple-5">
       <q-toolbar-title>
         Site Location
       </q-toolbar-title>
@@ -49,7 +49,7 @@ export default {
   }
 
   .q-list-header {
-    background-color: #979797;
+    background-color: #7b14709e;
     color: white;
     margin-top: 8px;
   }

@@ -54,7 +54,7 @@
         </q-item>
       </q-list>
     </div>
-     <q-toolbar class="footer">
+    <q-toolbar color="white" class="footer">
        <q-btn @click="signIn" color="teal-6">Sign in</q-btn>
     </q-toolbar>
   </div>
@@ -102,7 +102,7 @@ export default {
 
   .footer {
     position: absolute;
-    background-color: initial;
+    background-color: white;
     bottom: 0;
   }
 

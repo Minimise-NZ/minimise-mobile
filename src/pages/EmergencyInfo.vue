@@ -30,6 +30,8 @@
           </div>
         </div>
         <div class="map section">
+          <p>{{jobSite.medical}}</p>
+          <p><q-icon name="phone"/><span> {{jobSite.medPhone}}</span></p>
           <iframe
           width="100%"
           height="320px"
@@ -74,8 +76,9 @@ export default {
   .container {
     padding-top: 10px;
   }
+
   .section-header {
-    background-color:#979797;
+    background-color: #12589cba;
     border-radius: 5px;
   }
 
@@ -88,6 +91,10 @@ export default {
 
   .content {
     margin: 10px;
+  }
+
+  i {
+    margin-right: 10px;
   }
 
   span {

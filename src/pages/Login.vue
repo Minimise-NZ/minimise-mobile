@@ -40,10 +40,20 @@ export default {
           this.$store.dispatch('signIn', {email: this.email, password: this.password})
             .then(async () => {
               let user = await this.$store.dispatch('getUser')
-              this.$store.dispatch('getJobs')
-              this.$store.dispatch('getCompany')
-              console.log('user logged in', user)
-              this.$router.push('/location')
+              // check that user companyType is not principal
+              if (user.companyType === 'principal') {
+                this.$q.dialog({
+                  title: 'Incorrect user type',
+                  message: 'Please log in to web application'
+                })
+                this.$store.dispatch('logout')
+                this.$router.push('/')
+              } else {
+                this.$store.dispatch('getJobs')
+                this.$store.dispatch('getCompany')
+                console.log('user logged in', user)
+                this.$router.push('/location')
+              }
             })
         } catch (error) {
           this.$q.dialog({

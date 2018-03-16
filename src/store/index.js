@@ -2,10 +2,13 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
 import {firestore} from '../firestore'
+import moment from 'moment'
 import createPersistedState from 'vuex-persistedstate'
 // import moment from 'moment'
 
 Vue.use(Vuex)
+
+const today = moment().format('DD-MM-YYYY')
 
 const store = new Vuex.Store({
   state: {
@@ -100,7 +103,18 @@ const store = new Vuex.Store({
       })
       return promise
     },
-    findUser: ({state, commit}, payload) => {
+    autoSignIn ({commit, state, dispatch}, payload) {
+      commit('setUID', payload)
+      if (state.user === {}) {
+        dispatch('getUser')
+      }
+    },
+    logout ({commit, dispatch}) {
+      firebase.auth().signOut()
+      commit('clearStore')
+      localStorage.clear()
+    },
+    findUser ({state, commit}, payload) {
       let promise = new Promise((resolve, reject) => {
         console.log('getting user', payload)
         firestore.collection('users').where('email', '==', payload)
@@ -191,13 +205,14 @@ const store = new Vuex.Store({
               id: doc.id,
               address: job.address,
               principal: job.principalName,
+              principalKey: job.principalKey,
               projectManager: job.pm,
               pmKey: job.pmKey,
               PMcontact: job.pmPhone,
               HSEManager: job.hse,
               HSEcontact: job.hsePhone,
               hseKey: job.hseKey,
-              date: job.date,
+              date: today,
               notifiable: job.notifiable,
               info: job.info,
               medical: job.medical
@@ -208,6 +223,22 @@ const store = new Vuex.Store({
         .catch((error) => {
           console.log('Error getting documents: ', error)
         })
+    },
+    newIncident ({commit, dispatch, state}, payload) {
+      // create new incident in firestore
+      let incident = payload
+      incident.date = today
+      console.log('saving incident to firebase', incident)
+      let promise = new Promise((resolve, reject) => {
+        firestore.collection('incidents').add(incident)
+          .then((doc) => {
+            resolve(doc.id)
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+      return promise
     }
   },
   getters: {
