@@ -29,15 +29,15 @@ export default {
     }
   },
   computed: {
-    jobs () {
-      return this.$store.getters.jobs
-    }
   },
   methods: {
     setLocation (job) {
       this.$store.commit('setJob', job)
-      this.$router.push('/hazards')
+      this.$router.replace('/hazards')
     }
+  },
+  beforeCreate () {
+    this.jobs = this.$store.getters.jobs
   }
 }
 </script>

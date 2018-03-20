@@ -52,6 +52,7 @@ module.exports = function (ctx) {
         'QToolbar',
         'QToolbarTitle',
         'QBtn',
+        'QBtnGroup',
         'QIcon',
         'QList',
         'QListHeader',
@@ -69,11 +70,14 @@ module.exports = function (ctx) {
         'QCard',
         'QCardMedia',
         'QCardMain',
-        'QCardActions'
+        'QCardActions',
+        'QCheckbox',
+        'QItemSeparator'
       ],
       directives: [
         'Ripple',
-        'CloseOverlay'
+        'CloseOverlay',
+        'GoBack'
       ],
       plugins: [
         'Dialog',

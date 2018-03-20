@@ -12,28 +12,38 @@ const today = moment().format('DD-MM-YYYY')
 
 const store = new Vuex.Store({
   state: {
+    header: {},
     userKey: '',
     uid: '',
+    signedIn: false,
     user: {},
+    safetyPlan: {},
     companyKey: '',
     company: {},
     jobs: [],
     jobSite: {},
-    header: {
-      title: '',
-      color: ''
-    },
+    taskRequired: false,
+    task: {},
+    tasks: [],
+    allHazards: [],
     siteHazards: []
   },
   mutations: {
     clearStore (state) {
-      state.uid = ''
+      state.header = {}
       state.userKey = ''
+      state.uid = ''
+      state.signedIn = false
+      state.safetyPlan = {}
       state.user = {}
       state.companyKey = ''
       state.company = {}
       state.jobs = []
       state.jobSite = {}
+      state.taskRequired = false
+      state.task = {}
+      state.tasks = []
+      state.allHazards = []
       state.siteHazards = []
     },
     setHeader (state, payload) {
@@ -44,6 +54,9 @@ const store = new Vuex.Store({
     },
     setUID (state, payload) {
       state.uid = payload
+    },
+    setSignedin (state, payload) {
+      state.signedIn = payload
     },
     setUser (state, payload) {
       state.user = payload
@@ -59,6 +72,15 @@ const store = new Vuex.Store({
     },
     setJob (state, payload) {
       state.jobSite = payload
+    },
+    setTaskRequired (state, payload) {
+      state.taskRequired = payload
+    },
+    setTask (state, payload) {
+      state.task = payload
+    },
+    setTasks (state, payload) {
+      state.tasks = payload
     },
     setAllHazards (state, payload) {
       state.allHazards = payload
@@ -86,12 +108,11 @@ const store = new Vuex.Store({
       })
       return promise
     },
-    signIn ({commit}, payload) {
+    logIn ({commit}, payload) {
       let promise = new Promise((resolve, reject) => {
         firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
           .then(
             user => {
-              commit('setUID', user.uid)
               resolve()
             }
           )
@@ -103,7 +124,7 @@ const store = new Vuex.Store({
       })
       return promise
     },
-    autoSignIn ({commit, state, dispatch}, payload) {
+    autoLogIn ({commit, state, dispatch}, payload) {
       commit('setUID', payload)
       if (state.user === {}) {
         dispatch('getUser')
@@ -113,6 +134,10 @@ const store = new Vuex.Store({
       firebase.auth().signOut()
       commit('clearStore')
       localStorage.clear()
+      console.log(window.history.length)
+    },
+    signIn (commit, dispatch) {
+      // sign user into existing safety plan
     },
     findUser ({state, commit}, payload) {
       let promise = new Promise((resolve, reject) => {
@@ -175,14 +200,39 @@ const store = new Vuex.Store({
       })
       return promise
     },
-    updateCurrentUser ({state}, payload) {
+    getTasks ({commit, state}) {
+      // get task analysis from firestore
+      if (state.tasks.length < 1) {
+        console.log('getting tasks')
+        firestore.collection('companies').doc(state.companyKey)
+          .collection('taskAnalysis')
+          .get()
+          .then((snapshot) => {
+            let tasks = []
+            snapshot.forEach((doc) => {
+              tasks.push(doc.data())
+            })
+            commit('setTasks', tasks)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      } else {
+        console.log('Tasks already in store')
+        return state.tasks
+      }
+    },
+    updateCurrentUser ({state, dispatch}, payload) {
       let promise = new Promise((resolve, reject) => {
         firestore.collection('users').doc(state.userKey)
           .get()
           .then((doc) => {
             firestore.collection('users').doc(doc.id).set(payload, {merge: true})
-            console.log('User updated')
-            resolve()
+              .then(() => {
+                console.log('User updated')
+                dispatch('getUser')
+                resolve()
+              })
           })
           .catch((error) => {
             reject(error)
@@ -190,39 +240,55 @@ const store = new Vuex.Store({
       })
       return promise
     },
+    updateEmail ({state, dispatch}, payload) {
+      var user = firebase.auth().currentUser
+      user.updateEmail(payload).then(function () {
+        // Update successful.
+        console.log('email updated successfully')
+        dispatch('updateCurrentUser', {email: payload})
+      }).catch(function (error) {
+        // An error happened.
+        console.log(error)
+      })
+    },
     getJobs ({commit, state}) {
       // get all jobs in progress that this worker is assigned to
-      let approvedkey = 'approved.' + state.companyKey
-      firestore.collection('jobSites').where(approvedkey, '==', true)
-        .get()
-        .then((snapshot) => {
-          console.log(snapshot)
-          let jobs = []
-          snapshot.forEach((doc) => {
-            console.log(doc.data())
-            let job = doc.data()
-            jobs.push({
-              id: doc.id,
-              address: job.address,
-              principal: job.principalName,
-              principalKey: job.principalKey,
-              projectManager: job.pm,
-              pmKey: job.pmKey,
-              PMcontact: job.pmPhone,
-              HSEManager: job.hse,
-              HSEcontact: job.hsePhone,
-              hseKey: job.hseKey,
-              date: today,
-              notifiable: job.notifiable,
-              info: job.info,
-              medical: job.medical
+      let promise = new Promise((resolve, reject) => {
+        let approvedkey = 'approved.' + state.companyKey
+        firestore.collection('jobSites').where(approvedkey, '==', true)
+          .get()
+          .then((snapshot) => {
+            console.log(snapshot)
+            let jobs = []
+            snapshot.forEach((doc) => {
+              console.log(doc.data())
+              let job = doc.data()
+              jobs.push({
+                id: doc.id,
+                address: job.address,
+                principal: job.principalName,
+                principalKey: job.principalKey,
+                projectManager: job.pm,
+                pmKey: job.pmKey,
+                PMcontact: job.pmPhone,
+                HSEManager: job.hse,
+                HSEcontact: job.hsePhone,
+                hseKey: job.hseKey,
+                date: today,
+                notifiable: job.notifiable,
+                info: job.info,
+                medical: job.medical
+              })
             })
+            commit('setJobs', jobs)
+            resolve()
           })
-          commit('setJobs', jobs)
-        })
-        .catch((error) => {
-          console.log('Error getting documents: ', error)
-        })
+          .catch((error) => {
+            console.log('Error getting documents: ', error)
+            reject(error)
+          })
+      })
+      return promise
     },
     newIncident ({commit, dispatch, state}, payload) {
       // create new incident in firestore
@@ -244,10 +310,14 @@ const store = new Vuex.Store({
   getters: {
     user: (state) => state.user,
     userKey: (state) => state.userKey,
+    company: (state) => state.company,
+    signedIn: (state) => state.signedIn,
     jobs: (state) => state.jobs,
     jobSite: (state) => state.jobSite,
-    allHazards: (state) => state.company.hazards,
+    allHazards: (state) => state.allHazards,
     siteHazards: (state) => state.siteHazards,
+    tasks: (state) => state.tasks,
+    taskRequired: (state) => state.taskRequired,
     header: (state) => state.header
   },
   plugins: [createPersistedState()]

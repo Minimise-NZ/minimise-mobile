@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-toolbar color="deep-orange-7" class="shadow-2">
-      <q-btn flat icon="arrow_back" @click="$router.push('/location')" replace/>
+      <q-btn flat icon="arrow_back" @click="$router.go(-1)" replace/>
       <q-toolbar-title>
         Hazard Register
       </q-toolbar-title>
@@ -64,13 +64,25 @@ export default {
       openModal: false,
       group: 'opt1',
       index: '',
-      hazard: {},
-      selectedHazards: []
+      hazard: {}
     }
   },
   computed: {
     hazards () {
-      return this.$store.getters.allHazards
+      let signedIn = this.$store.signedIn
+      if (signedIn === false || signedIn === undefined || signedIn === null) {
+        console.log('not signed in')
+        return this.$store.getters.company.hazards
+      } else {
+        console.log('Signed in', signedIn)
+        return this.$store.getters.allHazards
+      }
+    },
+    selectedHazards () {
+      return this.$store.getters.siteHazards
+    },
+    taskAnalysisRequired () {
+      return this.$store.getters.taskRequired
     }
   },
   methods: {
@@ -87,13 +99,10 @@ export default {
           title: 'Worksafe Notification Required',
           message: 'Please confirm that you have notified Worksafe and have a copy of the notification.',
           ok: 'Agree',
-          cancel: 'Disagree'
+          cancel: 'Disagree',
+          noBackdropDismiss: true
         }).then(() => {
           this.hazard.worksafeNotification = 'confirmed'
-          // if a task analysis is required, open task modal
-          if (this.hazard.taskAnalysis === true) {
-            // open modal
-          }
         }).catch(() => {
           this.$q.notify('Worksafe notification is required. You are not permitted to start this work activity')
         })
@@ -121,6 +130,10 @@ export default {
           }
         }
       }
+      // if a task analysis is required, go to task page
+      if (this.hazard.taskAnalysis === true) {
+        this.$store.commit('setTaskRequired', true)
+      }
       // add hazard to array ready to be written to database
       this.selectedHazards.push(this.hazard)
       // remove hazard from hazard list and return new hazards list
@@ -128,18 +141,18 @@ export default {
       this.openModal = false
     },
     saveSiteHazards () {
-      // check that hazards are not empty
-      if (this.selectedHazards.length === 0) {
-        this.$q.notify({
-          message: 'Oops. You have not selected any hazards',
-          position: 'bottom',
-          timeout: 1000
-        })
-        return
-      }
       // save hazard register to store
-      this.$store.commit('setSiteHazards', this.selectedHazards)
-      this.$router.push('/home')
+      if (this.selectedHazards.length !== 0) {
+        this.$store.commit('setSiteHazards', this.selectedHazards)
+        this.$store.commit('setAllHazards', this.hazards)
+        if (this.taskAnalysisRequired === true) {
+          this.$router.replace('/home/taskAnalysis')
+        } else {
+          this.$router.replace('/home')
+        }
+      } else {
+        this.$router.replace('/home')
+      }
     },
     cancel () {
       this.hazard = ''

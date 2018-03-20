@@ -8,6 +8,7 @@
               <q-item v-for="(control, index) in hazard.controls" :key="index">
                 <q-item-side icon="check" style="color: green" v-if="control.status === 'Controlled'"></q-item-side>
                 <q-item-side icon="close" style="color: red" v-if="control.status === 'Uncontrolled'"></q-item-side>
+                <q-item-side icon="remove" style="color: grey" v-if="control.status === 'n/a'"></q-item-side>
                 <q-item-main>
                   <q-item-tile label>{{control.desc}}</q-item-tile>
                 </q-item-main>
@@ -26,6 +27,7 @@
     <q-toolbar color="green-6" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
     </q-toolbar>
+    <q-btn class="fixed shadow-8" size="lg" style="right: 18px; bottom: 18px" round color="primary" icon="add" @click="$router.push('/hazards')" replace/>
   </div>
 </template>
 
@@ -38,6 +40,8 @@ export default {
     }
   },
   computed: {
+  },
+  methods: {
   },
   beforeMount () {
     this.jobSite = this.$store.getters.jobSite

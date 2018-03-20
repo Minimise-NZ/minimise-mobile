@@ -39,7 +39,7 @@ export default {
   computed: {
     loggedIn () {
       let userKey = this.$store.getters.userKey
-      if (userKey === '') {
+      if (userKey === '' || userKey === undefined || userKey === null) {
         return false
       } else {
         return true
@@ -53,16 +53,11 @@ export default {
       }
     },
     jobSite () {
-      return this.$store.getters.jobSite
+      let job = this.$store.getters.jobSite
+      return job
     }
-  },
-  beforeMount () {
-    this.$store.dispatch('logout')
   },
   methods: {
-    signOut () {
-      // sign off jobSite
-    }
   }
 }
 </script>

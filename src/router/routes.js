@@ -48,6 +48,10 @@ export default [
       {
         path: 'incident',
         component: () => import('pages/Incident')
+      },
+      {
+        path: 'taskAnalysis',
+        component: () => import('pages/TaskAnalysis')
       }
     ]
   },

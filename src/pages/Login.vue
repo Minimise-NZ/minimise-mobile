@@ -34,10 +34,8 @@ export default {
             title: 'Alert',
             message: 'Please enter email address and password'
           })
-          return
-        }
-        try {
-          this.$store.dispatch('signIn', {email: this.email, password: this.password})
+        } else {
+          this.$store.dispatch('logIn', {email: this.email, password: this.password})
             .then(async () => {
               let user = await this.$store.dispatch('getUser')
               // check that user companyType is not principal
@@ -47,19 +45,22 @@ export default {
                   message: 'Please log in to web application'
                 })
                 this.$store.dispatch('logout')
-                this.$router.push('/')
+                this.$router.replace('/')
               } else {
                 this.$store.dispatch('getJobs')
-                this.$store.dispatch('getCompany')
-                console.log('user logged in', user)
-                this.$router.push('/location')
+                  .then(() => {
+                    this.$store.dispatch('getCompany')
+                    console.log('user logged in', user)
+                    this.$router.replace('/location')
+                  })
               }
             })
-        } catch (error) {
-          this.$q.dialog({
-            title: 'Alert',
-            message: error.message
-          })
+            .catch((error) => {
+              this.$q.dialog({
+                title: 'Invalid email or password',
+                message: error.message
+              })
+            })
         }
       })
     }

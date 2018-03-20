@@ -13,7 +13,7 @@ const firebaseApp = firebase.initializeApp({
 
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
-    store.dispatch('autoSignIn', user.uid)
+    store.dispatch('autoLogIn', user.uid)
   } else {
     console.log('user not signed in')
   }

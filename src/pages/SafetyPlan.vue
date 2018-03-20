@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <q-list style="padding-top: 20px">
-        <q-item @click.native="$router.push('./home/emergency')">
+        <q-item @click.native="$router.push('/home/emergency')" replace>
           <q-item-side>
             <img src="statics/emergency-phone.jpg">
           </q-item-side>
@@ -10,7 +10,7 @@
             <q-item-tile label>Emergency Contacts</q-item-tile>
           </q-item-main>
         </q-item>
-        <q-item @click.native="$router.push('/home/hazardRegister')">
+        <q-item @click.native="$router.push('/home/hazardRegister')" replace>
           <q-item-side>
             <img src="statics/icon-hazard.png">
           </q-item-side>
@@ -18,7 +18,7 @@
             <q-item-tile label>Hazard Register</q-item-tile>
           </q-item-main>
         </q-item>
-        <q-item @click.native="$router.push('./home/incident')">
+        <q-item @click.native="$router.push('/home/incident')" replace>
           <q-item-side>
             <img src="statics/red-cross.jpg">
           </q-item-side>
@@ -26,7 +26,7 @@
             <q-item-tile label>Report an Incident</q-item-tile>
           </q-item-main>
         </q-item>
-        <q-item>
+        <q-item  @click.native="$router.push('/home/taskAnalysis')" replace>
           <q-item-side>
             <img src="statics/Clipboard-check.jpg">
           </q-item-side>
