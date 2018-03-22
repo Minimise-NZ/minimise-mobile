@@ -26,6 +26,13 @@
     <meta name="msapplication-TileImage" content="statics/icons/minimise-144x144.png">
     <meta name="msapplication-TileColor" content="<%= htmlWebpackPlugin.options.pwaManifest.background_color %>">
     <% } %>
+    
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript">
+      (function(){
+          emailjs.init("user_cwcJzjfpAVTVZlMNrg0yd");
+      })();
+    </script>
 
     <%= htmlWebpackPlugin.options.headScripts %>
 

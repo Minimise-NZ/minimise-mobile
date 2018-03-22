@@ -4,11 +4,14 @@ import * as firebase from 'firebase'
 import {firestore} from '../firestore'
 import moment from 'moment'
 import createPersistedState from 'vuex-persistedstate'
-// import moment from 'moment'
+import _ from 'lodash'
+import router from '../router'
 
 Vue.use(Vuex)
 
 const today = moment().format('DD-MM-YYYY')
+const expiryDate = moment().add(7, 'days').format('DD-MM-YYYY')
+// const now = moment().format('DD-MM-YYYY hh:mm')
 
 const store = new Vuex.Store({
   state: {
@@ -34,8 +37,8 @@ const store = new Vuex.Store({
       state.userKey = ''
       state.uid = ''
       state.signedIn = false
-      state.safetyPlan = {}
       state.user = {}
+      state.safetyPlan = {}
       state.companyKey = ''
       state.company = {}
       state.jobs = []
@@ -55,11 +58,17 @@ const store = new Vuex.Store({
     setUID (state, payload) {
       state.uid = payload
     },
-    setSignedin (state, payload) {
+    setSignedIn (state, payload) {
       state.signedIn = payload
     },
     setUser (state, payload) {
       state.user = payload
+    },
+    setSafetyPlan (state, payload) {
+      state.safetyPlan = payload
+    },
+    setTimecard (state, payload) {
+      state.safetyPlan.timecard = payload
     },
     setCompanyKey (state, payload) {
       state.companyKey = payload
@@ -136,8 +145,60 @@ const store = new Vuex.Store({
       localStorage.clear()
       console.log(window.history.length)
     },
-    signIn (commit, dispatch) {
-      // sign user into existing safety plan
+    signIn ({commit, state, dispatch}) {
+      // if there is no current safety plan, create safety plan and save to firestore
+      let promise = new Promise((resolve, reject) => {
+        let plan = state.safetyPlan
+        if (_.isEmpty(plan) || plan === undefined || plan === null) {
+          // create a safety plan
+          console.log('No safety plan exists')
+          plan.workerKey = state.userKey
+          plan.workerName = state.user.name
+          plan.createdDate = today
+          plan.expiryDate = expiryDate
+          plan.jobId = state.jobSite.id
+          plan.jobAddress = state.jobSite.address
+          plan.hazardRegister = state.siteHazards
+          plan.taskAnalysis = state.task
+          plan.trainingRegister = state.user.training
+          plan.signedIn = true
+          console.log(plan)
+          firestore.collection('safetyPlans').add(plan)
+            .then((doc) => {
+              plan.id = doc.id
+              commit('setSignedIn', true)
+              commit('setSafetyPlan', plan)
+              dispatch('setTimeout')
+              resolve('Safety Plan added to firestore')
+            })
+            .catch((error) => {
+              reject(error)
+            })
+        } else {
+          // if a safety plan exists then sign onto it
+          let plan = state.safetyPlan
+          plan.signedIn = true
+          commit('setSafetyPlan', plan)
+          firestore.collection('safetyPlans').doc(state.safetyPlan.id).set(state.safetyPlan)
+          commit('setSignedIn', true)
+          dispatch('setTimeout')
+          resolve('Signed into safety plan')
+        }
+      })
+      return promise
+    },
+    setTimeout ({ commit }) {
+      setTimeout(() => {
+        commit('setSignedIn', false)
+      }, 10 * 60 * 60 * 1000)
+    },
+    signOut ({commit, state}) {
+      let plan = state.safetyPlan
+      plan.signedIn = false
+      commit('setSafetyPlan', plan)
+      firestore.collection('safetyPlans').doc(state.safetyPlan.id).set(state.safetyPlan)
+      commit('setSignedIn', false)
+      router.replace('/')
     },
     findUser ({state, commit}, payload) {
       let promise = new Promise((resolve, reject) => {
@@ -193,6 +254,29 @@ const store = new Vuex.Store({
             let company = doc.data()
             commit('setCompany', company)
             resolve()
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+      return promise
+    },
+    getSafetyPlan ({commit, state}, payload) {
+      let promise = new Promise((resolve, reject) => {
+        console.log('getting safety plan')
+        firestore.collection('safetyPlans').where('jobId', '==', payload).where('workerKey', '==', state.userKey)
+          .get()
+          .then((snapshot) => {
+            if (!snapshot.empty) {
+              snapshot.forEach((doc) => {
+                let plan = doc.data()
+                plan.id = doc.id
+                commit('setSafetyPlan', plan)
+                resolve(plan)
+              })
+            } else {
+              resolve(null)
+            }
           })
           .catch((error) => {
             reject(error)
@@ -305,6 +389,30 @@ const store = new Vuex.Store({
           })
       })
       return promise
+    },
+    submitFeedback ({state}, payload) {
+      // send an email to Minimse support
+      let promise = new Promise((resolve, reject) => {
+        let subject = payload.type
+        window.emailjs.send('my_service', 'support', {
+          username: state.user.name,
+          userEmail: state.user.email,
+          subject: subject,
+          platform: 'mobile',
+          details: payload.details
+        })
+          .then(
+            function (response) {
+              console.log('Email SUCCESS', response)
+              resolve(response)
+            },
+            function (error) {
+              console.log('Email FAILED', error)
+              reject(error)
+            }
+          )
+      })
+      return promise
     }
   },
   getters: {
@@ -313,6 +421,7 @@ const store = new Vuex.Store({
     company: (state) => state.company,
     signedIn: (state) => state.signedIn,
     jobs: (state) => state.jobs,
+    safetyPlan: (state) => state.safetyPlan,
     jobSite: (state) => state.jobSite,
     allHazards: (state) => state.allHazards,
     siteHazards: (state) => state.siteHazards,

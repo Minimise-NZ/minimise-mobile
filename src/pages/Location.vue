@@ -23,17 +23,53 @@
 </template>
 
 <script>
+import _ from 'lodash'
+import moment from 'moment'
 export default {
   data () {
     return {
     }
   },
   computed: {
+    currentSafetyPlan () {
+      return this.$store.getters.safetyPlan
+    }
   },
   methods: {
     setLocation (job) {
       this.$store.commit('setJob', job)
-      this.$router.replace('/hazards')
+      // check if a safety plan is already in store
+      if (_.isEmpty(this.currentSafetyPlan) || this.currentSafetyPlan.jobId !== job.id) {
+        // retrieve safety plan from firestore if there is one
+        this.$store.dispatch('getSafetyPlan', job.id)
+          .then((response) => {
+            // if a safety plan exists, check if it has expired
+            if (response !== null) {
+              let plan = response
+              if (moment().isSameOrAfter(plan.expiryDate)) {
+                console.log('plan has expired')
+                this.$router.push('/hazards')
+              } else {
+                console.log('Plan is current')
+                this.$router.push('/home')
+              }
+            } else {
+              console.log('There is no safety plan for this jobsite')
+              this.$router.push('/hazards')
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      } else {
+        if (moment().isSameOrAfter(this.currentSafetyPlan.expiryDate)) {
+          console.log('plan has expired')
+          this.$router.push('/hazards')
+        } else {
+          console.log('Plan is current')
+          this.$router.push('/home')
+        }
+      }
     }
   },
   beforeCreate () {

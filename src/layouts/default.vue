@@ -52,8 +52,9 @@
                 rows="10"
               />
               <q-btn-group>
-                <q-btn color="red-5">Cancel</q-btn>
-              <q-btn color="green-5">Submit</q-btn>
+                <q-btn color="red-5" @click="support = ''">Cancel</q-btn>
+              <q-btn color="green-5"
+              @click="submitSupport">Submit</q-btn>
               </q-btn-group>
             </q-card>
           </q-collapsible>
@@ -67,8 +68,8 @@
               rows="10"
             />
             <q-btn-group>
-              <q-btn color="red-5">Cancel</q-btn>
-            <q-btn color="green-5">Submit</q-btn>
+              <q-btn color="red-5" @click="feedback = ''">Cancel</q-btn>
+            <q-btn color="green-5" @click="submitFeedback">Submit</q-btn>
             </q-btn-group>
           </q-card>
         </q-collapsible>
@@ -86,16 +87,21 @@
         </q-item>
         <q-item-separator />
         <q-list-header class="drawer-header">Safety Plan</q-list-header>
+        <div v-if="signedIn === true">
+          <q-item>
+            <q-item-main :label="address"/>
+          </q-item>
+          <q-item @click.native="$router.push('/home'), leftDrawerOpen = !leftDrawerOpen" replace>
+            <q-item-side icon="remove red eye" />
+            <q-item-main label="View Safety Plan"/>
+          </q-item>
+          <q-item @click.native="signout">
+            <q-item-side icon="clear" />
+            <q-item-main label="Sign out"/>
+          </q-item>
+        </div>
         <q-item>
-          <q-item-main :label="address"/>
-        </q-item>
-         <q-item @click.native="$router.push('/home')" replace>
-          <q-item-side icon="remove red eye" />
-          <q-item-main label="View Safety Plan"/>
-        </q-item>
-        <q-item>
-          <q-item-side icon="clear" />
-          <q-item-main label="Sign out"/>
+          <q-item-main label="You are not signed in to a safety plan" v-if="signedIn === false"/>
         </q-item>
         </q-scroll-area>
         <q-btn
@@ -146,6 +152,9 @@ export default {
     },
     address () {
       return this.$store.getters.jobSite.address
+    },
+    signedIn () {
+      return this.$store.getters.signedIn
     }
   },
   beforeMount () {
@@ -179,6 +188,52 @@ export default {
         console.log('Nothing has changed')
         this.readonly = true
       }
+    },
+    submitSupport () {
+      this.$store.dispatch('submitFeedback', {type: 'Support Request', details: this.support})
+        .then((response) => {
+          if (response.status === 200) {
+            this.$q.dialog({
+              title: 'Success',
+              message: 'Your support request has been submitted. We will contact you as soon as possible'
+            })
+            this.support = ''
+          } else {
+            this.$q.dialog({
+              title: 'Oops',
+              message: 'There was a problem sending your request. Please contact your administrator'
+            })
+            this.support = ''
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    submitFeedback () {
+      this.$store.dispatch('submitFeedback', {type: 'General Feedback', details: this.feedback})
+        .then((response) => {
+          console.log(response)
+          if (response.status === 200) {
+            this.$q.dialog({
+              title: 'Success',
+              message: 'Thank you for your feedback'
+            })
+            this.feedback = ''
+          } else {
+            this.$q.dialog({
+              title: 'Oops',
+              message: 'There was a problem sending your feedback. Please contact your administrator'
+            })
+            this.feedback = ''
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    signout () {
+      this.$store.dispatch('signOut')
     },
     confirmLogout () {
       this.$q.dialog({

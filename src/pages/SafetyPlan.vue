@@ -55,7 +55,8 @@
       </q-list>
     </div>
     <q-toolbar color="white" class="footer">
-       <q-btn @click="signIn" color="teal-6">Sign in</q-btn>
+       <q-btn @click="signIn" color="teal-6" v-if="signedIn === false">Sign In</q-btn>
+       <q-btn @click="signOut" color="deep-orange-6" v-else>Sign Out</q-btn>
     </q-toolbar>
   </div>
 </template>
@@ -68,6 +69,11 @@ export default {
       header: { title: 'Site Specific Safety Plan', color: 'teal-6' }
     }
   },
+  computed: {
+    signedIn () {
+      return this.$store.getters.signedIn
+    }
+  },
   beforeMount () {
     this.jobSite = this.$store.getters.jobSite
     this.$store.dispatch('updateHeader', this.header)
@@ -75,6 +81,17 @@ export default {
   methods: {
     signIn () {
       // sign user in
+      this.$store.dispatch('signIn')
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    signOut () {
+      // sign off jobsite and go back to homepage
+      this.$store.commit('signOut')
     }
   }
 }

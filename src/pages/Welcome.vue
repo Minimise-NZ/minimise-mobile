@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+// import _ from 'lodash'
 export default {
   data () {
     return {
@@ -46,11 +46,7 @@ export default {
       }
     },
     signedIn () {
-      if (_.isEmpty(this.jobSite)) {
-        return false
-      } else {
-        return true
-      }
+      return this.$store.getters.signedIn
     },
     jobSite () {
       let job = this.$store.getters.jobSite
@@ -58,6 +54,9 @@ export default {
     }
   },
   methods: {
+    signOut () {
+      this.$store.dispatch('signOut')
+    }
   }
 }
 </script>
