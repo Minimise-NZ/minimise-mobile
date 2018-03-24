@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container" v-if="currentTask === {}">
+    <div class="container" v-if="currentTask === null">
       <q-list>
         <q-list-header >Please select Task Analysis</q-list-header>
         <q-scroll-area style="width: 100%">
@@ -120,7 +120,12 @@ export default {
   },
   computed: {
     currentTask () {
-      return this.$store.getters.task
+      let task = this.$store.getters.task
+      if (_.isEmpty(task)) {
+        return null
+      } else {
+        return task
+      }
     },
     tasks () {
       return this.$store.getters.tasks
