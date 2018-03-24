@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   data () {
     return {
@@ -69,13 +70,11 @@ export default {
   },
   computed: {
     hazards () {
-      let signedIn = this.$store.signedIn
-      if (signedIn === false || signedIn === undefined || signedIn === null) {
-        console.log('not signed in')
-        return this.$store.getters.company.hazards
-      } else {
-        console.log('Signed in', signedIn)
+      let plan = this.$store.getters.safetyPlan
+      if (!_.isEmpty(plan)) {
         return this.$store.getters.allHazards
+      } else {
+        return this.$store.getters.company.hazards
       }
     },
     selectedHazards () {
@@ -146,7 +145,7 @@ export default {
         this.$store.commit('setSiteHazards', this.selectedHazards)
         this.$store.commit('setAllHazards', this.hazards)
         if (this.taskAnalysisRequired === true) {
-          this.$router.replace('/home/taskAnalysis')
+          this.$router.push('/home/taskAnalysis')
         } else {
           this.$router.replace('/home')
         }

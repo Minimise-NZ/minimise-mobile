@@ -190,7 +190,6 @@ export default {
 
  .footer {
     position: absolute;
-    padding-left: 20px;
     bottom: 0;
   }
 

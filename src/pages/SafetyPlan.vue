@@ -91,7 +91,7 @@ export default {
     },
     signOut () {
       // sign off jobsite and go back to homepage
-      this.$store.commit('signOut')
+      this.$store.dispatch('signOut')
     }
   }
 }

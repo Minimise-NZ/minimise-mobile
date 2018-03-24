@@ -27,7 +27,9 @@
     <q-toolbar color="green-6" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
     </q-toolbar>
+    <!--
     <q-btn class="fixed shadow-8" size="lg" style="right: 18px; bottom: 18px" round color="primary" icon="add" @click="$router.push('/hazards')" replace/>
+    -->
   </div>
 </template>
 

@@ -174,22 +174,37 @@ const store = new Vuex.Store({
             .catch((error) => {
               reject(error)
             })
+        } else if (today > plan.expiryDate) {
+          // if a safety plan exists but has expired
+          console.log('Plan has expired')
+          plan.createdDate = today
+          plan.expiryDate = expiryDate
+          plan.hazardRegister = state.siteHazards
+          plan.taskAnalysis = state.task
+          plan.trainingRegister = state.user.training
+          plan.signedIn = true
+          firestore.collection('safetyPlans').doc(state.safetyPlan.id).set(state.safetyPlan, {merge: true})
+          commit('setSafetyPlan', plan)
+          commit('setSignedIn', true)
+          dispatch('autoSignOut')
+          resolve('Updated safety plan')
         } else {
-          // if a safety plan exists then sign onto it
+          // if a safety plan exists and has not expired then sign onto it
           let plan = state.safetyPlan
           plan.signedIn = true
           commit('setSafetyPlan', plan)
           firestore.collection('safetyPlans').doc(state.safetyPlan.id).set(state.safetyPlan)
           commit('setSignedIn', true)
-          dispatch('setTimeout')
+          dispatch('autoSignOut')
           resolve('Signed into safety plan')
         }
       })
       return promise
     },
-    setTimeout ({ commit }) {
+    autoSignOut ({ commit }) {
       setTimeout(() => {
         commit('setSignedIn', false)
+        router.replace('/')
       }, 10 * 60 * 60 * 1000)
     },
     signOut ({commit, state}) {
@@ -305,6 +320,22 @@ const store = new Vuex.Store({
         console.log('Tasks already in store')
         return state.tasks
       }
+    },
+    getNotMyHazards ({commit, state}) {
+      let myHazards = state.siteHazards
+      console.log('My Hazards', myHazards)
+      let allHazards = state.company.hazards.slice(0)
+      if (myHazards.length !== 0) {
+        for (var i = 0; i < allHazards.length; i++) {
+          for (var j = 0; j < myHazards.length; j++) {
+            if (allHazards[i].id === myHazards[j].id) {
+              allHazards.splice(i, 1)
+            }
+          }
+        }
+      }
+      console.log(allHazards)
+      commit('setAllHazards', allHazards)
     },
     updateCurrentUser ({state, dispatch}, payload) {
       let promise = new Promise((resolve, reject) => {
@@ -426,6 +457,7 @@ const store = new Vuex.Store({
     allHazards: (state) => state.allHazards,
     siteHazards: (state) => state.siteHazards,
     tasks: (state) => state.tasks,
+    task: (state) => state.task,
     taskRequired: (state) => state.taskRequired,
     header: (state) => state.header
   },

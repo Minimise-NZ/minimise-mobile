@@ -38,7 +38,7 @@
               </q-card-main>
               <q-card-actions class="justify-end">
                 <q-btn icon-right="edit" color="grey-6" label="Edit Profile" @click="editMode" v-if="readonly"/>
-                <q-btn icon-right="check" color="grey-6" label="Save Changes" @click="updateProfile" v-else/>
+                <q-btn icon-right="check" color="primary" label="Save Changes" @click="updateProfile" v-if="!readonly"/>
               </q-card-actions>
             </q-card>
           </q-collapsible>

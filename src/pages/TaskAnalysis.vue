@@ -1,12 +1,49 @@
 <template>
   <div>
-    <div class="container">
+    <div class="container" v-if="currentTask === {}">
       <q-list>
         <q-list-header >Please select Task Analysis</q-list-header>
         <q-scroll-area style="width: 100%">
           <q-item v-for="(task, index) in tasks" :key="index" @click.native="showtask(task, index)">
             <q-item-main style="padding-left: 20px">
               <q-item-tile label>{{task.title}}</q-item-tile>
+            </q-item-main>
+          </q-item>
+        </q-scroll-area>
+      </q-list>
+    </div>
+    <div class="container" v-else>
+      <q-list highlight>
+        <q-list-header>{{currentTask.title}}</q-list-header>
+        <q-scroll-area style="width: 100%; height: 72vh">
+          <div class="row justify-between" v-if="currentTask.ppeRequired === 'true'">
+            <div class="col-10">
+              <q-input :value="currentTask.ppe" stack-label="PPE required" readonly/>
+            </div>
+          </div>
+          <div class="row justify-between" v-if="currentTask.plantRequired === 'true'">
+            <div class="col-10">
+              <q-input :value="currentTask.plant" stack-label="Plant required" readonly/>
+            </div>
+          </div>
+          <div class="row justify-between" v-if="currentTask.signage === 'true'">
+            <div class="col-10">
+                <q-input stack-label="Signage required" value="Signage in place" readonly/>
+            </div>
+          </div>
+          <q-item v-for="(step, index) of currentTask.steps" :key="index">
+            <q-item-main>
+              <div class="section-header">
+                <p class="header-text">Step {{index+1}}</p>
+              </div>
+              <div class="content">
+                <p><strong>Description of step</strong></p>
+                <q-item-tile style="padding-bottom: 15px">{{step.description}}</q-item-tile>
+                <p><strong>Hazards</strong></p>
+                <q-item-tile style="padding-bottom: 15px">{{step.hazards}}</q-item-tile>
+                <p><strong>Controls</strong></p>
+                <q-item-tile style="padding-bottom: 15px">{{step.controls}}</q-item-tile>
+              </div>
             </q-item-main>
           </q-item>
         </q-scroll-area>
@@ -67,6 +104,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   data () {
     return {
@@ -81,24 +119,25 @@ export default {
     }
   },
   computed: {
+    currentTask () {
+      return this.$store.getters.task
+    },
     tasks () {
       return this.$store.getters.tasks
     }
   },
   beforeCreate () {
-    let signedIn = this.$store.getters.signedIn
-    if (signedIn === '') {
-      this.$store.dispatch('getTasks')
-    } else {
-      console.log('Safety plan exists')
-    }
+    this.$store.dispatch('getTasks')
   },
   beforeMount () {
     this.$store.dispatch('updateHeader', this.header)
+    if (!_.isEmpty(this.task)) {
+      this.openModal = true
+    }
   },
   methods: {
     showtask (task, index) {
-      // set selected hazard and open control modal
+      // set selected task and open modal
       this.index = index
       this.task = task
       this.openModal = true
@@ -139,7 +178,7 @@ export default {
       }
       this.$store.commit('setTaskRequired', false)
       this.$store.commit('setTask', this.task)
-      this.$router.go(-1)
+      this.$router.replace('/home')
     },
     cancel () {
       this.task = ''

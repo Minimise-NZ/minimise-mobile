@@ -25,6 +25,7 @@
 <script>
 import _ from 'lodash'
 import moment from 'moment'
+const today = moment().format('DD-MM-YYYY')
 export default {
   data () {
     return {
@@ -40,17 +41,30 @@ export default {
       this.$store.commit('setJob', job)
       // check if a safety plan is already in store
       if (_.isEmpty(this.currentSafetyPlan) || this.currentSafetyPlan.jobId !== job.id) {
+        // clear store
+        this.$store.commit('setSafetyPlan', {})
+        this.$store.commit('setAllHazards', [])
+        this.$store.commit('setSiteHazards', [])
+        this.$store.commit('setTask', {})
+        this.$store.commit('setTaskRequired', false)
         // retrieve safety plan from firestore if there is one
         this.$store.dispatch('getSafetyPlan', job.id)
           .then((response) => {
-            // if a safety plan exists, check if it has expired
+            // Check expiry date of safety plan. If expired start a new plan
             if (response !== null) {
               let plan = response
-              if (moment().isSameOrAfter(plan.expiryDate)) {
+              if (today > plan.expiryDate) {
                 console.log('plan has expired')
+                this.$q.dialog({
+                  title: 'Safety Plan has expired',
+                  message: 'Please create a new safety plan'
+                })
                 this.$router.push('/hazards')
               } else {
-                console.log('Plan is current')
+                // Plan has not expired. Set items in store
+                this.$store.commit('setSiteHazards', plan.hazardRegister)
+                this.$store.commit('setTask', plan.taskAnalysis)
+                this.$store.dispatch('getNotMyHazards')
                 this.$router.push('/home')
               }
             } else {
@@ -62,8 +76,16 @@ export default {
             console.log(error)
           })
       } else {
-        if (moment().isSameOrAfter(this.currentSafetyPlan.expiryDate)) {
+        if (today > this.currentSafetyPlan.expiryDate) {
           console.log('plan has expired')
+          this.$q.dialog({
+            title: 'Safety Plan has expired',
+            message: 'Please create a new safety plan'
+          })
+          this.$store.commit('setAllHazards', [])
+          this.$store.commit('setSiteHazards', [])
+          this.$store.commit('setTask', {})
+          this.$store.commit('setTaskRequired', false)
           this.$router.push('/hazards')
         } else {
           console.log('Plan is current')

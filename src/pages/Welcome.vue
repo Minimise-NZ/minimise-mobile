@@ -5,7 +5,7 @@
     </div>
     <div class="headings">
       <div class="q-display-2">m&#305;n&#305;m&#305;se</div>
-      <div class="q-subheading">Simple Safety on Construction Sites</div>
+      <div class="q-subheading" v-if="!signedIn">Simple Safety on Construction Sites</div>
     </div>
     <div class="buttons" v-if="loggedIn === false">
       <router-link to='/login'>
@@ -19,7 +19,7 @@
       <router-link to='/home'>
         <q-btn color="primary" rounded big>View Safety Plan</q-btn>
       </router-link>
-      <q-btn color="primary" @click="signOut" rounded big>Sign out</q-btn>
+      <q-btn color="deep-orange-6" @click="signOut" rounded big>Sign out</q-btn>
     </div>
      <div class="buttons" v-if="signedIn === false && loggedIn === true">
       <router-link to='/location'>

@@ -78,7 +78,7 @@ export default {
   }
 
   .section-header {
-    background-color: #12589cba;
+    background-color: #13416dba;
     border-radius: 5px;
   }
 
