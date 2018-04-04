@@ -19,6 +19,9 @@
         </q-scroll-area>
       </q-list>
     </div>
+    <q-inner-loading :visible="loading" dark>
+      <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -29,6 +32,7 @@ const today = moment().format('DD-MM-YYYY')
 export default {
   data () {
     return {
+      loading: false
     }
   },
   computed: {
@@ -38,6 +42,7 @@ export default {
   },
   methods: {
     setLocation (job) {
+      this.loading = true
       this.$store.commit('setJob', job)
       // check if a safety plan is already in store
       if (_.isEmpty(this.currentSafetyPlan) || this.currentSafetyPlan.jobId !== job.id) {

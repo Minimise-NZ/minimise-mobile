@@ -54,6 +54,9 @@
         <q-btn class="fixed shadow-8" size="md" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="saveHazard"/>
       </div>
     </q-modal>
+    <q-inner-loading :visible="loading" dark>
+      <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -65,7 +68,8 @@ export default {
       openModal: false,
       group: 'opt1',
       index: '',
-      hazard: {}
+      hazard: {},
+      loading: false
     }
   },
   computed: {
@@ -87,9 +91,11 @@ export default {
   methods: {
     showhazard (hazard, index) {
       // set selected hazard and open control modal
+      this.loading = true
       this.index = index
       this.hazard = hazard
       this.openModal = true
+      this.loading = false
       setTimeout(this.notifications, 1000)
     },
     notifications () {
@@ -141,6 +147,7 @@ export default {
     },
     saveSiteHazards () {
       // save hazard register to store
+      this.loading = true
       if (this.selectedHazards.length !== 0) {
         this.$store.commit('setSiteHazards', this.selectedHazards)
         this.$store.commit('setAllHazards', this.hazards)

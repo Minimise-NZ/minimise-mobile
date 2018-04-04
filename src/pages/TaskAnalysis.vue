@@ -100,6 +100,9 @@
     <q-toolbar color="primary" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.go(-1)" replace/>
     </q-toolbar>
+    <q-inner-loading :visible="loading" dark>
+      <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -115,7 +118,8 @@ export default {
       signedOn: false,
       ppeChecked: false,
       plantChecked: false,
-      signageChecked: false
+      signageChecked: false,
+      loading: false
     }
   },
   computed: {
@@ -181,6 +185,7 @@ export default {
         })
         return
       }
+      this.loading = true
       this.$store.commit('setTaskRequired', false)
       this.$store.commit('setTask', this.task)
       this.$router.replace('/home')

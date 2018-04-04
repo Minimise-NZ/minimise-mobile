@@ -3,7 +3,7 @@
 module.exports = function (ctx) {
   return {
     plugins: [
-      'vee-validate',
+      'vee-validate'
     ],
     css: [
       'app.styl'
@@ -72,7 +72,9 @@ module.exports = function (ctx) {
         'QCardMain',
         'QCardActions',
         'QCheckbox',
-        'QItemSeparator'
+        'QItemSeparator',
+        'QInnerLoading',
+        'QSpinnerGears'
       ],
       directives: [
         'Ripple',

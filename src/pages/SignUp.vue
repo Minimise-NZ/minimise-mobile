@@ -41,6 +41,9 @@
       <q-btn v-if="found" color="primary" rounded big @click="signup">Next</q-btn>
       <router-link to='/'>Go back</router-link>
     </div>
+    <q-inner-loading :visible="loading" dark>
+      <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -53,11 +56,15 @@ export default {
       email: '',
       password: '',
       confirmPassword: '',
-      user: {}
+      user: {},
+      loading: false
     }
+  },
+  computed: {
   },
   methods: {
     findUser () {
+      this.loading = true
       // find user details in firestore
       this.$validator.validateAll().then(async (valid) => {
         if (!valid) {
@@ -65,18 +72,21 @@ export default {
             title: 'Alert',
             message: 'Please enter a valid email address'
           })
+          this.loading = false
           return
         }
         try {
           let user = await this.$store.dispatch('findUser', this.email)
           this.user = user
           this.found = true
+          this.loading = false
         } catch (error) {
           console.log(error.message)
           this.$q.dialog({
             title: 'Alert',
             message: error.message
           })
+          this.loading = false
         }
       })
     },
@@ -85,6 +95,7 @@ export default {
       this.$validator.validateAll().then(async (valid) => {
         if (!valid) { return }
         try {
+          this.loading = true
           // create new user in firebase
           let uid = await this.$store.dispatch('signUp', {email: this.email, password: this.password})
           // update userProfile with uid
@@ -93,8 +104,10 @@ export default {
           await this.$store.dispatch('getUser')
           // let companyType = this.user.companyType
           // go to location page
+          this.loading = false
           // this.$router.push()
         } catch (err) {
+          this.loading = false
           console.log(err)
         }
       })

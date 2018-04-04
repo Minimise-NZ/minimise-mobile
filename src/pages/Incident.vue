@@ -62,6 +62,9 @@
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
       <q-btn class="fixed shadow-8" size="lg" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="submit"/>
     </q-toolbar>
+    <q-inner-loading :visible="loading" dark>
+      <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -116,7 +119,8 @@ export default {
   },
   methods: {
     submit () {
-      // scheck that all fields are complete
+      // check that all fields are complete
+      this.loading = true
       if (this.incident.type === '' || this.incident.description === '' || this.incident.corrective === '') {
         this.$q.notify({
           message: 'Please complete all fields',

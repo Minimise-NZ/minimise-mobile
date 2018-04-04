@@ -14,6 +14,9 @@
       <q-btn color="primary" rounded big @click="login">Next</q-btn>
       <router-link to='/'>Go back</router-link>
     </div>
+    <q-inner-loading :visible="loading" dark>
+      <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -22,8 +25,11 @@ export default {
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      loading: false
     }
+  },
+  computed: {
   },
   methods: {
     login () {
@@ -35,6 +41,7 @@ export default {
             message: 'Please enter email address and password'
           })
         } else {
+          this.loading = true
           this.$store.dispatch('logIn', {email: this.email, password: this.password})
             .then(async () => {
               let user = await this.$store.dispatch('getUser')

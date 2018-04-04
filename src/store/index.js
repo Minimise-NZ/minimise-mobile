@@ -339,7 +339,7 @@ const store = new Vuex.Store({
       console.log(allHazards)
       commit('setAllHazards', allHazards)
     },
-    updateCurrentUser ({state, dispatch}, payload) {
+    updateCurrentUser ({state, commit, dispatch}, payload) {
       let promise = new Promise((resolve, reject) => {
         firestore.collection('users').doc(state.userKey)
           .get()
@@ -357,7 +357,7 @@ const store = new Vuex.Store({
       })
       return promise
     },
-    updateEmail ({state, dispatch}, payload) {
+    updateEmail ({state, commit, dispatch}, payload) {
       var user = firebase.auth().currentUser
       user.updateEmail(payload).then(function () {
         // Update successful.
@@ -423,7 +423,7 @@ const store = new Vuex.Store({
       })
       return promise
     },
-    submitFeedback ({state}, payload) {
+    submitFeedback ({state, commit}, payload) {
       // send an email to Minimse support
       let promise = new Promise((resolve, reject) => {
         let subject = payload.type

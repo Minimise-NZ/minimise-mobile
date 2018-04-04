@@ -55,9 +55,12 @@
       </q-list>
     </div>
     <q-toolbar color="white" class="footer">
-       <q-btn @click="signIn" color="teal-6" v-if="signedIn === false">Sign In</q-btn>
-       <q-btn @click="signOut" color="deep-orange-6" v-else>Sign Out</q-btn>
+      <q-btn @click="signIn" color="teal-6" v-if="signedIn === false">Sign In</q-btn>
+      <q-btn @click="signOut" color="deep-orange-6" v-else>Sign Out</q-btn>
     </q-toolbar>
+    <q-inner-loading :visible="loading" dark>
+      <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -66,7 +69,8 @@ export default {
   data () {
     return {
       jobSite: {},
-      header: { title: 'Site Specific Safety Plan', color: 'teal-6' }
+      header: { title: 'Site Specific Safety Plan', color: 'teal-6' },
+      loading: false
     }
   },
   computed: {
@@ -81,12 +85,15 @@ export default {
   methods: {
     signIn () {
       // sign user in
+      this.loading = true
       this.$store.dispatch('signIn')
         .then((response) => {
           console.log(response)
+          this.loading = false
         })
         .catch((error) => {
           console.log(error)
+          this.loading = false
         })
     },
     signOut () {
