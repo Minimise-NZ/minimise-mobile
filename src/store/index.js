@@ -394,7 +394,8 @@ const store = new Vuex.Store({
                 date: today,
                 notifiable: job.notifiable,
                 info: job.info,
-                medical: job.medical
+                medical: job.medical,
+                medPhone: job.medPhone
               })
             })
             commit('setJobs', jobs)

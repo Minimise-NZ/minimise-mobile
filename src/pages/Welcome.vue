@@ -21,10 +21,8 @@
       </router-link>
       <q-btn color="deep-orange-6" @click="signOut" rounded big>Sign out</q-btn>
     </div>
-     <div class="buttons" v-if="signedIn === false && loggedIn === true">
-      <router-link to='/location'>
-        <q-btn color="primary" rounded big>New Job Site</q-btn>
-      </router-link>
+    <div class="buttons" v-if="signedIn === false && loggedIn === true">
+      <q-btn color="primary" rounded big @click="newJob">New Job Site</q-btn>
     </div>
   </div>
 </template>
@@ -56,6 +54,11 @@ export default {
   methods: {
     signOut () {
       this.$store.dispatch('signOut')
+    },
+    newJob () {
+      console.log('getting jobs')
+      this.$store.dispatch('getJobs')
+      this.$router.push('/location')
     }
   }
 }

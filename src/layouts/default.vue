@@ -19,8 +19,8 @@
         inset-delimiter
       >
         <q-list-header class="drawer-header">Shilo Kherington</q-list-header>
-        <q-scroll-area style="width: 100%; height: 75vh;">
-          <q-collapsible icon="person" label="My Profile">
+        <q-scroll-area style="width: 100%; height: 80vh;">
+          <q-collapsible icon="person" label="My Profile" class="q-pt-md">
             <q-card>
               <q-card-main>
                 <q-item class="sub-item">
@@ -42,7 +42,7 @@
               </q-card-actions>
             </q-card>
           </q-collapsible>
-          <q-collapsible icon="help" label="Support">
+          <q-collapsible icon="help" label="Support" class="q-pt-sm">
             <q-card>
               <q-input
                 v-model="support"
@@ -58,7 +58,7 @@
               </q-btn-group>
             </q-card>
           </q-collapsible>
-          <q-collapsible icon="feedback" label="Feedback">
+          <q-collapsible icon="feedback" label="Feedback" class="q-pt-sm q-pb-sm">
           <q-card>
             <q-input
               v-model="feedback"
@@ -72,37 +72,38 @@
             <q-btn color="green-5" @click="submitFeedback">Submit</q-btn>
             </q-btn-group>
           </q-card>
-        </q-collapsible>
-        <q-item @click.native="openURL('https://www.facebook.com/MinimiseNZ/')">
-          <q-item-side icon="group" />
-          <q-item-main label="Facebook" sublabel="minimise-NZ" />
-        </q-item>
-        <q-item @click.native="openURL('https://twitter.com/MinimiseNZ')">
-          <q-item-side icon="rss feed" />
-          <q-item-main label="Twitter" sublabel="@minimiseNZ" />
-        </q-item>
-        <q-item @click.native="openURL('https://minimisesafetyapp.com/')">
-          <q-item-side icon="web" />
-          <q-item-main label="Website" sublabel="minimisesafetyapp.com"/>
-        </q-item>
-        <q-item-separator />
-        <q-list-header class="drawer-header">Safety Plan</q-list-header>
-        <div v-if="signedIn === true">
-          <q-item>
-            <q-item-main :label="address"/>
+          </q-collapsible>
+          <q-item @click.native="openURL('https://www.facebook.com/MinimiseNZ/')">
+            <q-item-side icon="group" />
+            <q-item-main label="Facebook" sublabel="minimise-NZ" />
           </q-item>
-          <q-item @click.native="$router.push('/home'), leftDrawerOpen = !leftDrawerOpen" replace>
-            <q-item-side icon="remove red eye" />
-            <q-item-main label="View Safety Plan"/>
+          <q-item @click.native="openURL('https://twitter.com/MinimiseNZ')">
+            <q-item-side icon="rss feed" />
+            <q-item-main label="Twitter" sublabel="@minimiseNZ" />
           </q-item>
-          <q-item @click.native="signout">
-            <q-item-side icon="clear" />
-            <q-item-main label="Sign out"/>
+          <q-item @click.native="openURL('https://minimisesafetyapp.com/')" >
+            <q-item-side icon="web" />
+            <q-item-main label="Website" sublabel="minimisesafetyapp.com"/>
           </q-item>
-        </div>
-        <q-item>
-          <q-item-main label="You are not signed in to a safety plan" v-if="signedIn === false"/>
-        </q-item>
+          <q-item-separator />
+          <q-list-header class="drawer-header">Current Site Location</q-list-header>
+            <q-item>
+              <q-item-main :label="address"/>
+            </q-item>
+            <div v-if="signedIn === true">
+            <q-item @click.native="$router.push('/home'), leftDrawerOpen = !leftDrawerOpen" replace>
+              <q-item-side icon="remove red eye" />
+              <q-item-main label="View Safety Plan"/>
+            </q-item>
+            <q-item @click.native="signout">
+              <q-item-side icon="clear" />
+              <q-item-main label="Sign out"/>
+            </q-item>
+          </div>
+          <q-item v-if="signedIn !== true" @click.native="$router.replace('/location')">
+            <q-item-side icon="refresh" />
+            <q-item-main label="Change location"/>
+          </q-item>
         </q-scroll-area>
         <q-btn
           @click="confirmLogout"
@@ -112,12 +113,6 @@
           class="logout full-width fixed-bottom bg-dark text-grey-4"
           align="left">
         </q-btn>
-        <!--
-        <q-item class="logout" @click="confirmLogout">
-          <q-item-side color="light" icon="lock" />
-          <q-item-main label="Log off" class="text-light"/>
-        </q-item>
-        -->
       </q-list>
     </q-layout-drawer>
 

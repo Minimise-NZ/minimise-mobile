@@ -31,7 +31,7 @@
         </div>
         <div class="map section">
           <p>{{jobSite.medical}}</p>
-          <p><q-icon name="phone"/><span> {{jobSite.medPhone}}</span></p>
+          <p><q-icon name="phone"/><span>{{jobSite.medPhone}}</span></p>
           <iframe
           width="100%"
           height="320px"

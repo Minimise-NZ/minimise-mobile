@@ -72,6 +72,7 @@
 export default {
   data () {
     return {
+      loading: false,
       showModal: false,
       incident: {
         address: '',
