@@ -13,6 +13,9 @@ export default {
 <style>
   * {
     font-family: 'Raleway', sans-serif;
+    border: 1px solid grey;
+    padding: 0;
+    margin: 0;
   }
 
   #q-app {
@@ -37,11 +40,10 @@ export default {
 
   .buttons {
     position: absolute;
-    bottom: 20px;
     left: 0;
+    bottom: 0;
     text-align: center;
     width: 100%;
-    padding: 25px;
   }
 
   a {

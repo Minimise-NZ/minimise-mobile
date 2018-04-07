@@ -1,11 +1,17 @@
 <template>
-  <div class="login-container">
-    <div class="img-container">
-      <img src="../statics/minimise-256x256.png">
-    </div>
-    <div class="headings">
-      <div class="q-display-2">m&#305;n&#305;m&#305;se</div>
-      <div class="q-subheading" v-if="!signedIn">Simple Safety on Construction Sites</div>
+  <div>
+    <div class="content">
+      <div class="orientation-portrait headings">
+        <img src="../statics/icons/minimise-128x128.png">
+        <div class="q-display-2">m&#305;n&#305;m&#305;se</div>
+        <div class="q-subheading" v-if="!signedIn">Simple Safety on Construction Sites</div>
+      </div>
+      <div class="orientation-landscape row">
+        <div style="margin-right: 15px">
+          <img src="../statics/icons/minimise-128x128.png">
+        </div>
+        <div class="q-display-2" style="padding-top: 15px">m&#305;n&#305;m&#305;se</div>
+      </div>
     </div>
     <div class="buttons" v-if="loggedIn === false">
       <router-link to='/login'>
@@ -65,25 +71,28 @@ export default {
 </script>
 
 <style scoped>
-
-  .img-container {
-    height: 50vh;
-    padding: 15vh 0 0 0;
-    text-align: center;
+  .content {
+    height: 80vh;
+    padding-top: 10vh;
   }
 
   img {
-    height: 30vh;
+    height:25vh;
+    display: block;
+    margin: auto;
   }
 
   .headings {
-    height: 25vh;
-    margin-top: 15px;
+    height: 15vh;
     text-align: center;
   }
 
   .q-subheading {
     margin-top: 10px;
+  }
+
+  .buttons {
+    padding-bottom: 5vh;
   }
 
   button {
@@ -95,4 +104,11 @@ export default {
   a {
     display: block;
   }
+
+  .orientation-landscape {
+    margin: 2px 100px;
+    height: 97px;
+    padding:0 10px;
+  }
+
 </style>

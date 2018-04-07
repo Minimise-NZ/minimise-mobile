@@ -1,6 +1,7 @@
 <template>
-  <div class="login-container">
-    <div class="img-container">
+  <div>
+    <div class="content">
+       <div class="img-container">
       <img src="../statics/minimise-256x256.png">
     </div>
     <div class="headings">
@@ -10,6 +11,7 @@
       <q-input v-model="email" type="email" :before="[{icon: 'mail'}]" placeholder=' Email address' v-validate="'required|email'"/>
       <q-input v-model="password" type="password" :before="[{icon: 'lock'}]" placeholder=' Password' v-validate="'required'"/>
     </form>
+    </div>
     <div class="buttons">
       <q-btn color="primary" rounded big @click="login">Next</q-btn>
       <router-link to='/'>Go back</router-link>
@@ -76,11 +78,19 @@ export default {
 </script>
 
 <style scoped>
+
+  * {
+    border: 1px solid lightgray;
+  }
+
+  .content {
+    height: 80vh;
+  }
+
   .img-container {
-    position: relative;
-    height: 40vh;
-    padding: 15vh 0 0 0;
+    padding: 10vh 0 0 0;
     text-align: center;
+    position: relative;
   }
 
   img {
@@ -89,11 +99,6 @@ export default {
 
   .headings {
     text-align: center;
-    margin-bottom: 10vh;
-  }
-
-  .user-form {
-    padding-top: 5vh;
   }
 
   .q-input {
@@ -101,10 +106,14 @@ export default {
     margin: 10px;
   }
 
+  .buttons {
+    height: 20vh;
+    padding: 0;
+  }
+
   button {
     width: 100%;
     max-width: 300px;
-    margin-bottom: 20px;
   }
 
   a {
@@ -113,6 +122,9 @@ export default {
 
   .alert-text {
     color: red;
+  }
+
+  @media screen and (orientation:landscape) {
   }
 
 </style>
