@@ -63,7 +63,6 @@
 </template>
 
 <script>
-import _ from 'lodash'
 export default {
   data () {
     return {
@@ -76,12 +75,7 @@ export default {
   },
   computed: {
     hazards () {
-      let plan = this.$store.getters.safetyPlan
-      if (!_.isEmpty(plan)) {
-        return this.$store.getters.allHazards
-      } else {
-        return this.$store.getters.company.hazards
-      }
+      return this.$store.getters.company.hazards
     },
     selectedHazards () {
       return this.$store.getters.siteHazards

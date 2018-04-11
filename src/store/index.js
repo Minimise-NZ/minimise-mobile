@@ -165,9 +165,8 @@ const store = new Vuex.Store({
           plan.trainingRegister = state.user.training
           plan.signedIn = true
           console.log(plan)
-          firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').add(plan)
+          firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.userKey).set(plan)
             .then((doc) => {
-              plan.id = doc.id
               commit('setSignedIn', true)
               commit('setSafetyPlan', plan)
               dispatch('autoSignOut')
@@ -185,7 +184,7 @@ const store = new Vuex.Store({
           plan.taskAnalysis = state.task
           plan.trainingRegister = state.user.training
           plan.signedIn = true
-          firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.safetyPlan.id).set(state.safetyPlan, {merge: true})
+          firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.userKey).set(state.safetyPlan, {merge: true})
           commit('setSafetyPlan', plan)
           commit('setSignedIn', true)
           dispatch('autoSignOut')
@@ -195,7 +194,7 @@ const store = new Vuex.Store({
           let plan = state.safetyPlan
           plan.signedIn = true
           commit('setSafetyPlan', plan)
-          firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.safetyPlan.id).set(state.safetyPlan)
+          firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.userKey).set(state.safetyPlan)
           commit('setSignedIn', true)
           dispatch('autoSignOut')
           resolve('Signed into safety plan')
@@ -213,7 +212,7 @@ const store = new Vuex.Store({
       let plan = state.safetyPlan
       plan.signedIn = false
       commit('setSafetyPlan', plan)
-      firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.safetyPlan.id).set(state.safetyPlan)
+      firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.userKey).set(state.safetyPlan)
       commit('setSignedIn', false)
       router.replace('/')
     },
@@ -280,23 +279,22 @@ const store = new Vuex.Store({
     },
     getSafetyPlan ({commit, state}, payload) {
       let promise = new Promise((resolve, reject) => {
-        console.log('getting safety plan')
-        firestore.collection('jobSites').doc().collection('safetyPlans').where('jobId', '==', payload).where('workerKey', '==', state.userKey)
+        let jobId = payload
+        console.log('getting safety plan for job', jobId)
+        firestore.collection('jobSites').doc(jobId).collection('safetyPlans').doc(state.userKey)
           .get()
-          .then((snapshot) => {
-            if (!snapshot.empty) {
-              snapshot.forEach((doc) => {
-                let plan = doc.data()
-                plan.id = doc.id
-                commit('setSafetyPlan', plan)
-                resolve(plan)
-              })
+          .then((doc) => {
+            if (doc.exists) {
+              let plan = doc.data()
+              plan.id = doc.id
+              commit('setSafetyPlan', plan)
+              resolve(plan)
             } else {
               resolve(null)
             }
           })
           .catch((error) => {
-            reject(error)
+            console.log(error)
           })
       })
       return promise
