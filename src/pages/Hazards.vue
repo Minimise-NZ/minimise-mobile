@@ -8,8 +8,8 @@
     </q-toolbar>
     <div class="container">
       <q-list>
-        <q-list-header >Please select your hazards</q-list-header>
-        <q-scroll-area style="width: 100%; height: 75vh;">
+        <q-list-header class="bg-hazards">Please select your hazards</q-list-header>
+        <q-scroll-area style="width: 100%; height: 70vh;">
           <q-item v-for="(hazard, index) in hazards" :key="index" @click.native="showhazard(hazard, index)">
             <q-item-side>
               <img :src="hazard.thumb">
@@ -28,7 +28,7 @@
       </q-toolbar>
       <div class="container">
         <q-list highlight>
-          <q-list-header>Please check your controls are in place</q-list-header>
+          <q-list-header class="bg-hazards">Please check your controls are in place</q-list-header>
           <q-scroll-area style="width: 100%; height: 70vh;">
             <q-item v-for="(control, index) of hazard.controls" :key="index">
               <q-item-main>
@@ -50,8 +50,10 @@
             </q-item>
           </q-scroll-area>
         </q-list>
-        <q-btn class="fixed shadow-8" size="md" style="left: 18px; bottom: 18px" round color="negative" icon="clear" @click="cancel"/>
+        <div class="buttons">
+          <q-btn class="fixed shadow-8" size="md" style="left: 18px; bottom: 18px" round color="negative" icon="clear" @click="cancel"/>
         <q-btn class="fixed shadow-8" size="md" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="saveHazard"/>
+        </div>
       </div>
     </q-modal>
     <q-inner-loading :visible="loading" dark>
@@ -157,7 +159,12 @@ export default {
           this.$router.replace('/home')
         }
       } else {
-        this.$router.replace('/home')
+        this.$q.notify({
+          message: 'You have not selected any hazards',
+          position: 'bottom',
+          timeout: 1000
+        })
+        this.loading = false
       }
     },
     cancel () {
@@ -174,9 +181,12 @@ export default {
   }
 
   .q-list-header {
+    margin-top: 8px;
+  }
+
+  .bg-hazards {
     background-color: #c51d1dc2;
     color: white;
-    margin-top: 8px;
   }
 
   .q-item-label {
@@ -200,6 +210,18 @@ export default {
 
   p {
     margin-bottom: 5px;
+  }
+
+  @media screen and (max-height: 400px) {
+    .buttons, .q-toolbar, .q-list-header {
+      display: none;
+    }
+  }
+
+  @media screen and (orientation: landscape) {
+    .buttons, .q-toolbar, .q-list-header {
+      display: none;
+    }
   }
 
 </style>

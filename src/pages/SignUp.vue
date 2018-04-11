@@ -118,11 +118,10 @@ export default {
 
 <style scoped>
 
-  .img-container {
-    position: relative;
-    height: 40vh;
-    padding: 15vh 0 0 0;
+ .img-container {
+    padding: 5vh 0 0 0;
     text-align: center;
+    position: relative;
   }
 
   img {
@@ -135,15 +134,16 @@ export default {
   }
 
   .user-form {
-    padding-top: 3vh;
+    margin: 0 15px;
+    margin-top: 5vh;
   }
 
-  .q-field {
-    margin: 10px;
+ .buttons {
+    padding-bottom: 5vh;
   }
 
   button {
-    width: 100%;
+    width: 80%;
     max-width: 300px;
     margin-bottom: 20px;
   }
@@ -159,6 +159,27 @@ export default {
   .alert-text {
     font-size: 0.7rem;
     color: red;
+  }
+
+  @media screen and (max-height: 400px) {
+    .img-container, .headings {
+      display: none;
+    }
+    .user-form {
+      padding-top: 30px;
+    }
+  }
+
+  @media screen and (max-height: 150px) {
+    .img-container, .headings {
+      display: none;
+    }
+    .user-form {
+      padding-top: 5px;
+    }
+    .buttons {
+      display: none;
+    }
   }
 
 </style>

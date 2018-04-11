@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="content">
-       <div class="img-container">
-      <img src="../statics/minimise-256x256.png">
-    </div>
-    <div class="headings">
-      <div class="q-display-1">m&#305;n&#305;m&#305;se</div>
-    </div>
-    <form class="user-form" >
-      <q-input v-model="email" type="email" :before="[{icon: 'mail'}]" placeholder=' Email address' v-validate="'required|email'"/>
-      <q-input v-model="password" type="password" :before="[{icon: 'lock'}]" placeholder=' Password' v-validate="'required'"/>
-    </form>
+      <div class="img-container">
+        <img src="../statics/minimise-256x256.png">
+      </div>
+      <div class="headings">
+        <div class="q-display-1">m&#305;n&#305;m&#305;se</div>
+      </div>
+      <form class="user-form" >
+        <q-input v-model="email" type="email" :before="[{icon: 'mail'}]" placeholder=' Email address' v-validate="'required|email'"/>
+        <q-input v-model="password" type="password" :before="[{icon: 'lock'}]" placeholder=' Password' v-validate="'required'"/>
+      </form>
     </div>
     <div class="buttons">
       <q-btn color="primary" rounded big @click="login">Next</q-btn>
@@ -79,16 +79,12 @@ export default {
 
 <style scoped>
 
-  * {
-    border: 1px solid lightgray;
-  }
-
   .content {
     height: 80vh;
   }
 
   .img-container {
-    padding: 10vh 0 0 0;
+    padding: 5vh 0 0 0;
     text-align: center;
     position: relative;
   }
@@ -97,23 +93,28 @@ export default {
     height: 20vh;
   }
 
+  .user-form {
+    margin: 0 15px;
+    margin-top: 5vh;
+  }
+
   .headings {
     text-align: center;
   }
 
   .q-input {
-    padding-top: 10px;
+    padding-top: 15px;
     margin: 10px;
   }
 
   .buttons {
-    height: 20vh;
-    padding: 0;
+    padding-bottom: 5vh;
   }
 
   button {
-    width: 100%;
+    width: 80%;
     max-width: 300px;
+    margin-bottom: 20px;
   }
 
   a {
@@ -124,7 +125,25 @@ export default {
     color: red;
   }
 
-  @media screen and (orientation:landscape) {
+  @media screen and (max-height: 400px) {
+    .img-container, .headings {
+      display: none;
+    }
+    .user-form {
+      padding-top: 5px;
+    }
+  }
+
+  @media screen and (max-height: 150px) {
+    .img-container, .headings {
+      display: none;
+    }
+    .user-form {
+      padding-top: 5px;
+    }
+    .buttons {
+      display: none;
+    }
   }
 
 </style>

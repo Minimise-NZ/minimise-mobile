@@ -1,57 +1,59 @@
 <template>
   <div>
     <div class="container">
-      <q-list style="padding-top: 20px">
-        <q-item @click.native="$router.push('/home/emergency')" replace>
-          <q-item-side>
-            <img src="statics/emergency-phone.jpg">
-          </q-item-side>
-          <q-item-main style="padding-left: 20px">
-            <q-item-tile label>Emergency Contacts</q-item-tile>
-          </q-item-main>
-        </q-item>
-        <q-item @click.native="$router.push('/home/hazardRegister')" replace>
-          <q-item-side>
-            <img src="statics/icon-hazard.png">
-          </q-item-side>
-          <q-item-main style="padding-left: 20px">
-            <q-item-tile label>Hazard Register</q-item-tile>
-          </q-item-main>
-        </q-item>
-        <q-item @click.native="$router.push('/home/incident')" replace>
-          <q-item-side>
-            <img src="statics/red-cross.jpg">
-          </q-item-side>
-          <q-item-main style="padding-left: 20px">
-            <q-item-tile label>Report an Incident</q-item-tile>
-          </q-item-main>
-        </q-item>
-        <q-item  @click.native="$router.push('/home/taskAnalysis')" replace>
-          <q-item-side>
-            <img src="statics/Clipboard-check.jpg">
-          </q-item-side>
-          <q-item-main style="padding-left: 20px">
-            <q-item-tile label>Task Analysis</q-item-tile>
-          </q-item-main>
-        </q-item>
-        <q-item>
-          <q-item-side>
-            <img src="statics/toxic.jpg">
-          </q-item-side>
-          <q-item-main style="padding-left: 20px">
-            <q-item-tile label>Hazardous Substances</q-item-tile>
-            <q-item-tile sublabel>Coming Soon</q-item-tile>
-          </q-item-main>
-        </q-item>
-        <q-item>
-          <q-item-side>
-            <img src="statics/environmental.jpg">
-          </q-item-side>
-          <q-item-main style="padding-left: 20px">
-            <q-item-tile label>Environmental Plan</q-item-tile>
-            <q-item-tile sublabel>Coming Soon</q-item-tile>
-          </q-item-main>
-        </q-item>
+      <q-list>
+        <q-scroll-area>
+          <q-item @click.native="$router.push('/home/emergency')" replace>
+            <q-item-side>
+              <img src="statics/emergency-phone.jpg">
+            </q-item-side>
+            <q-item-main style="padding-left: 20px">
+              <q-item-tile label>Emergency Contacts</q-item-tile>
+            </q-item-main>
+          </q-item>
+          <q-item @click.native="$router.push('/home/hazardRegister')" replace>
+            <q-item-side>
+              <img src="statics/Hazard.png">
+            </q-item-side>
+            <q-item-main style="padding-left: 20px">
+              <q-item-tile label>Hazard Register</q-item-tile>
+            </q-item-main>
+          </q-item>
+          <q-item @click.native="$router.push('/home/incident')" replace>
+            <q-item-side>
+              <img src="statics/red-cross.jpg">
+            </q-item-side>
+            <q-item-main style="padding-left: 20px">
+              <q-item-tile label>Report an Incident</q-item-tile>
+            </q-item-main>
+          </q-item>
+          <q-item  @click.native="$router.push('/home/taskAnalysis')" replace>
+            <q-item-side>
+              <img src="statics/Clipboard-check.jpg">
+            </q-item-side>
+            <q-item-main style="padding-left: 20px">
+              <q-item-tile label>Task Analysis</q-item-tile>
+            </q-item-main>
+          </q-item>
+          <q-item>
+            <q-item-side>
+              <img src="statics/toxic.jpg">
+            </q-item-side>
+            <q-item-main style="padding-left: 20px">
+              <q-item-tile label>Hazardous Substances</q-item-tile>
+              <q-item-tile sublabel>Coming Soon</q-item-tile>
+            </q-item-main>
+          </q-item>
+          <q-item>
+            <q-item-side>
+              <img src="statics/environmental.jpg">
+            </q-item-side>
+            <q-item-main style="padding-left: 20px">
+              <q-item-tile label>Environmental Plan</q-item-tile>
+              <q-item-tile sublabel>Coming Soon</q-item-tile>
+            </q-item-main>
+          </q-item>
+        </q-scroll-area>
       </q-list>
     </div>
     <q-toolbar color="white" class="footer">
@@ -108,10 +110,11 @@ export default {
 
 .q-list {
     border: none;
+    padding-bottom: 50px;
   }
 
   .q-item-label {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .q-item {

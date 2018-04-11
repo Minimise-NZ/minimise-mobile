@@ -6,11 +6,10 @@
         <div class="q-display-2">m&#305;n&#305;m&#305;se</div>
         <div class="q-subheading" v-if="!signedIn">Simple Safety on Construction Sites</div>
       </div>
-      <div class="orientation-landscape row">
-        <div style="margin-right: 15px">
-          <img src="../statics/icons/minimise-128x128.png">
+      <div class="orientation-landscape">
+        <div>
+          <img src="../statics/icons/minimise-long-min.jpg">
         </div>
-        <div class="q-display-2" style="padding-top: 15px">m&#305;n&#305;m&#305;se</div>
       </div>
     </div>
     <div class="buttons" v-if="loggedIn === false">
@@ -92,11 +91,11 @@ export default {
   }
 
   .buttons {
-    padding-bottom: 5vh;
+    padding-bottom: 10vh;
   }
 
   button {
-    width: 100%;
+    width: 80%;
     max-width: 300px;
     margin-bottom: 20px;
   }

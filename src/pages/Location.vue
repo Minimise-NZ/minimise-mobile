@@ -7,8 +7,8 @@
     </q-toolbar>
     <div class="container">
       <q-list highlight>
-        <q-list-header>Please select your job site</q-list-header>
-        <q-scroll-area style="width: 100%; height: 80vh;">
+        <q-list-header class="bg-location">Please select your job site</q-list-header>
+        <q-scroll-area>
           <q-item @click.native="setLocation(job)" v-for="job in jobs" :key="job.id">
             <q-item-side icon="home"></q-item-side>
             <q-item-main>
@@ -19,7 +19,7 @@
         </q-scroll-area>
       </q-list>
     </div>
-    <q-inner-loading :visible="loading" dark>
+    <q-inner-loading :visible="loading" full-height dark>
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
   </div>
@@ -112,8 +112,6 @@ export default {
   }
 
   .q-list-header {
-    background-color: #7b14709e;
-    color: white;
     margin-top: 8px;
   }
 
@@ -123,6 +121,22 @@ export default {
 
   .q-item-main {
     padding: 10px 0;
+  }
+
+  .q-scroll-area {
+    width: 100%;
+    height: 80vh;
+  }
+
+  .bg-location {
+    background-color: #7b14709e;
+    color: white;
+  }
+
+  @media screen and (orientation: landscape) {
+    .q-scroll-area {
+      height: 60vh;
+    }
   }
 
 </style>

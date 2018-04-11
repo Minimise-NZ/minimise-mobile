@@ -13,7 +13,6 @@ export default {
 <style>
   * {
     font-family: 'Raleway', sans-serif;
-    border: 1px solid grey;
     padding: 0;
     margin: 0;
   }
@@ -21,6 +20,7 @@ export default {
   #q-app {
     height: 100vh;
   }
+
   .container{
     margin: 0 1.5vh;
   }
