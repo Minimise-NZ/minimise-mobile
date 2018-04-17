@@ -39,6 +39,12 @@ export default {
     return {
     }
   },
+  mounted () {
+    if (this.signedIn === false && this.loggedIn === true) {
+      console.log('getting jobs')
+      this.$store.dispatch('getJobs')
+    }
+  },
   computed: {
     loggedIn () {
       let userKey = this.$store.getters.userKey
@@ -61,8 +67,6 @@ export default {
       this.$store.dispatch('signOut')
     },
     newJob () {
-      console.log('getting jobs')
-      this.$store.dispatch('getJobs')
       this.$router.push('/location')
     }
   }
