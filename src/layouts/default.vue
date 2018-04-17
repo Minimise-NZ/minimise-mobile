@@ -18,8 +18,8 @@
         link
         inset-delimiter
       >
-        <q-list-header class="drawer-header">Shilo Kherington</q-list-header>
-        <q-scroll-area style="width: 100%; height: 80vh;">
+        <q-list-header class="drawer-header">{{user.name}}</q-list-header>
+        <q-scroll-area>
           <q-collapsible icon="person" label="My Profile" class="q-pt-md">
             <q-card>
               <q-card-main>
@@ -42,36 +42,20 @@
               </q-card-actions>
             </q-card>
           </q-collapsible>
-          <q-collapsible icon="help" label="Support" class="q-pt-sm">
+          <q-collapsible icon="feedback" label="Support/Feedback" class="q-pt-sm">
             <q-card>
               <q-input
                 v-model="support"
                 type="textarea"
                 style="padding: 10px"
-                placeholder="Please enter details of support request"
+                placeholder="Please enter feedback details"
                 rows="10"
               />
               <q-btn-group>
                 <q-btn color="red-5" @click="support = ''">Cancel</q-btn>
-              <q-btn color="green-5"
-              @click="submitSupport">Submit</q-btn>
+              <q-btn color="green-5" @click="submitSupport">Submit</q-btn>
               </q-btn-group>
             </q-card>
-          </q-collapsible>
-          <q-collapsible icon="feedback" label="Feedback" class="q-pt-sm q-pb-sm">
-          <q-card>
-            <q-input
-              v-model="feedback"
-              type="textarea"
-              style="padding: 10px"
-              placeholder="Please enter feedback details"
-              rows="10"
-            />
-            <q-btn-group>
-              <q-btn color="red-5" @click="feedback = ''">Cancel</q-btn>
-            <q-btn color="green-5" @click="submitFeedback">Submit</q-btn>
-            </q-btn-group>
-          </q-card>
           </q-collapsible>
           <q-item @click.native="openURL('https://www.facebook.com/MinimiseNZ/')">
             <q-item-side icon="group" />
@@ -185,12 +169,12 @@ export default {
       }
     },
     submitSupport () {
-      this.$store.dispatch('submitFeedback', {type: 'Support Request', details: this.support})
+      this.$store.dispatch('submitFeedback', {subject: 'Support Request', details: this.support})
         .then((response) => {
           if (response.status === 200) {
             this.$q.dialog({
               title: 'Success',
-              message: 'Your support request has been submitted. We will contact you as soon as possible'
+              message: 'Thank you for your feedback. If you have requested support, we will be in touch soon'
             })
             this.support = ''
           } else {
@@ -199,28 +183,6 @@ export default {
               message: 'There was a problem sending your request. Please contact your administrator'
             })
             this.support = ''
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    submitFeedback () {
-      this.$store.dispatch('submitFeedback', {type: 'General Feedback', details: this.feedback})
-        .then((response) => {
-          console.log(response)
-          if (response.status === 200) {
-            this.$q.dialog({
-              title: 'Success',
-              message: 'Thank you for your feedback'
-            })
-            this.feedback = ''
-          } else {
-            this.$q.dialog({
-              title: 'Oops',
-              message: 'There was a problem sending your feedback. Please contact your administrator'
-            })
-            this.feedback = ''
           }
         })
         .catch((err) => {
@@ -277,5 +239,16 @@ export default {
     border-radius: 0;
     color: #e0e0e0;
     font-size: 1rem;
+  }
+
+  .q-scroll-area {
+    width: 100%;
+    height: 80vh;
+  }
+
+  @media screen and (orientation: landscape) {
+    .q-scroll-area {
+      height: 70vh;
+    }
   }
 </style>

@@ -1,61 +1,54 @@
 <template>
-  <div>
-    <div class="container" v-if="currentTask === null">
-      <q-list>
-        <q-list-header >Please select Task Analysis</q-list-header>
-        <q-scroll-area style="width: 100%">
-          <q-item v-for="(task, index) in tasks" :key="index" @click.native="showtask(task, index)">
-            <q-item-main style="padding-left: 20px">
-              <q-item-tile label>{{task.title}}</q-item-tile>
-            </q-item-main>
-          </q-item>
-        </q-scroll-area>
-      </q-list>
+  <div class="outer">
+    <div class="inner-container" v-if="currentTask === null">
+      <q-list-header class="bg-blue-7 text-white" style="margin-bottom: 0">Please select Task Analysis</q-list-header>
+      <q-scroll-area style="width: 100%">
+        <q-item v-for="(task, index) in tasks" :key="index" @click.native="showtask(task, index)">
+          <q-item-main style="padding-left: 20px">
+            <q-item-tile label style="padding: 20px 0">{{task.title}}</q-item-tile>
+          </q-item-main>
+        </q-item>
+      </q-scroll-area>
     </div>
-    <div class="container" v-else>
-      <q-list highlight>
-        <q-list-header>{{currentTask.title}}</q-list-header>
-        <q-scroll-area style="width: 100%; height: 72vh">
-          <div class="row justify-between" v-if="currentTask.ppeRequired === 'true'">
-            <div class="col-10">
-              <q-input :value="currentTask.ppe" stack-label="PPE required" readonly/>
-            </div>
+    <div class="inner-container" v-else>
+      <q-list-header class="bg-blue-9 text-white" style="margin-bottom: 0">{{currentTask.title}}</q-list-header>
+      <q-scroll-area style="width: 100%; height: 72vh">
+        <div class="row justify-between" v-if="currentTask.ppeRequired === 'true'">
+          <div class="col-10">
+            <q-input :value="currentTask.ppe" stack-label="PPE required" readonly/>
           </div>
-          <div class="row justify-between" v-if="currentTask.plantRequired === 'true'">
-            <div class="col-10">
-              <q-input :value="currentTask.plant" stack-label="Plant required" readonly/>
-            </div>
+        </div>
+        <div class="row justify-between" v-if="currentTask.plantRequired === 'true'">
+          <div class="col-10">
+            <q-input :value="currentTask.plant" stack-label="Plant required" readonly/>
           </div>
-          <div class="row justify-between" v-if="currentTask.signage === 'true'">
-            <div class="col-10">
-                <q-input stack-label="Signage required" value="Signage in place" readonly/>
-            </div>
+        </div>
+        <div class="row justify-between" v-if="currentTask.signage === 'true'">
+          <div class="col-10">
+              <q-input stack-label="Signage required" value="Signage in place" readonly/>
           </div>
-          <q-item v-for="(step, index) of currentTask.steps" :key="index">
-            <q-item-main>
-              <div class="section-header">
-                <p class="header-text">Step {{index+1}}</p>
-              </div>
-              <div class="content">
-                <p><strong>Description of step</strong></p>
-                <q-item-tile style="padding-bottom: 15px">{{step.description}}</q-item-tile>
-                <p><strong>Hazards</strong></p>
-                <q-item-tile style="padding-bottom: 15px">{{step.hazards}}</q-item-tile>
-                <p><strong>Controls</strong></p>
-                <q-item-tile style="padding-bottom: 15px">{{step.controls}}</q-item-tile>
-              </div>
-            </q-item-main>
-          </q-item>
-        </q-scroll-area>
-      </q-list>
+        </div>
+        <q-item v-for="(step, index) of currentTask.steps" :key="index">
+          <q-item-main>
+           <q-list-header class="bg-secondary text-white">Step {{index+1}}</q-list-header>
+            <div class="content">
+              <p><strong>Description of step</strong></p>
+              <q-item-tile style="padding-bottom: 15px">{{step.description}}</q-item-tile>
+              <p><strong>Hazards</strong></p>
+              <q-item-tile style="padding-bottom: 15px">{{step.hazards}}</q-item-tile>
+              <p><strong>Controls</strong></p>
+              <q-item-tile style="padding-bottom: 15px">{{step.controls}}</q-item-tile>
+            </div>
+          </q-item-main>
+        </q-item>
+      </q-scroll-area>
     </div>
     <q-modal v-model="openModal">
-      <q-toolbar color="blue" class="shadow-2">
-        <q-toolbar-title style="padding-left: 25px">{{task.title}}</q-toolbar-title>
+      <q-toolbar primary class="shadow-2">
+        <q-toolbar-title style="padding-left: 15px">{{task.title}}</q-toolbar-title>
       </q-toolbar>
-      <div class="container">
-        <q-list highlight>
-          <q-list-header>Please review task steps</q-list-header>
+      <div class="inner-container">
+        <q-list-header class="bg-blue-8 text-white">Please review task steps</q-list-header>
           <q-scroll-area style="width: 100%; height: 72vh">
             <div class="row justify-between" v-if="task.ppeRequired === 'true'">
               <div class="col-10">
@@ -77,9 +70,7 @@
             </div>
             <q-item v-for="(step, index) of task.steps" :key="index">
               <q-item-main>
-                <div class="section-header">
-                  <p class="header-text">Step {{index+1}}</p>
-                </div>
+                <q-list-header class="bg-secondary text-white">Step {{index+1}}</q-list-header>
                 <div class="content">
                   <p><strong>Description of step</strong></p>
                   <q-item-tile style="padding-bottom: 15px">{{step.description}}</q-item-tile>
@@ -92,12 +83,11 @@
             </q-item>
             <q-checkbox v-model="signedOn" left-label label="I have reviewed this task analysis and have been appropriately trained in the process" style="margin: 10px 10px 20px 10px"/>
           </q-scroll-area>
-        </q-list>
         <q-btn class="fixed shadow-8" size="md" style="left: 18px; bottom: 18px" round color="negative" icon="clear" @click="cancel"/>
         <q-btn class="fixed shadow-8" size="md" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="saveTask"/>
       </div>
     </q-modal>
-    <q-toolbar color="primary" class="footer shadow-2">
+    <q-toolbar color="blue-9" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.go(-1)" replace/>
     </q-toolbar>
     <q-inner-loading :visible="loading" dark>
@@ -111,7 +101,7 @@ import _ from 'lodash'
 export default {
   data () {
     return {
-      header: { title: 'Task Analysis', color: 'primary' },
+      header: { title: 'Task Analysis', color: 'blue-9' },
       openModal: false,
       index: '',
       task: {},
@@ -200,19 +190,12 @@ export default {
 
 <style scoped>
 
-  .q-list {
-    border: none;
+  .inner-container {
+    padding: 20px 15px 0 15px;
   }
 
   .col-10, .col-1 {
     padding: 10px;
-  }
-
-  .q-list-header {
-    background-color: #155084bd;
-    color: white;
-    margin-top: 8px;
-    margin-bottom: 5px;
   }
 
   .q-item-label {
@@ -238,19 +221,9 @@ export default {
     padding: 10px 0 0 0;
   }
 
-  .section-header {
-    background-color: #1c6873ba;
-    border-radius: 5px;
+  .q-list-header {
     margin-bottom: 10px;
   }
-
-  .header-text {
-    color: white;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 15px;
-  }
-
   h5 {
     font-size: 14px;
     font-weight: 500;

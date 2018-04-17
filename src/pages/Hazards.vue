@@ -8,7 +8,7 @@
     </q-toolbar>
     <div class="container">
       <q-list>
-        <q-list-header class="bg-hazards">Please select your hazards</q-list-header>
+        <q-list-header class="bg-deep-orange-5 text-white">Please select your hazards</q-list-header>
         <q-scroll-area style="width: 100%; height: 70vh;">
           <q-item v-for="(hazard, index) in hazards" :key="index" @click.native="showhazard(hazard, index)">
             <q-item-side>
@@ -28,7 +28,7 @@
       </q-toolbar>
       <div class="container">
         <q-list highlight>
-          <q-list-header class="bg-hazards">Please check your controls are in place</q-list-header>
+          <q-list-header class="bg-deep-orange-5 text-white">Please check your controls are in place</q-list-header>
           <q-scroll-area style="width: 100%; height: 70vh;">
             <q-item v-for="(control, index) of hazard.controls" :key="index">
               <q-item-main>
@@ -175,12 +175,7 @@ export default {
   }
 
   .q-list-header {
-    margin-top: 8px;
-  }
-
-  .bg-hazards {
-    background-color: #c51d1dc2;
-    color: white;
+    margin-top: 15px;
   }
 
   .q-item-label {

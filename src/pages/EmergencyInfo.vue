@@ -1,11 +1,9 @@
 <template>
-  <div>
+  <div class="outer">
     <div class="container">
       <q-scroll-area style="width: 100%; height: 80vh;">
         <div class="section">
-          <div class="section-header">
-            <p class="header-text">Site Contacts</p>
-          </div>
+          <q-list-header class="bg-indigo-4 text-white">Site Contacts</q-list-header>
           <div class="content">
             <p>Site Manager: {{jobSite.projectManager}}</p>
             <p><q-icon name="phone"/><span>{{jobSite.PMcontact}}</span></p>
@@ -14,9 +12,7 @@
           </div>
         </div>
         <div class="section">
-          <div class="section-header">
-            <p class="header-text">Emergency Contacts</p>
-          </div>
+          <q-list-header class="bg-indigo-4 text-white">Emergency Contacts</q-list-header>
           <div class="content">
             <p><q-icon name="phone"/>Fire, Ambulance, Police: <span>111</span></p>
             <p><q-icon name="phone"/>Orion Faults: <span>0800 363 9898</span></p>
@@ -25,9 +21,7 @@
           </div>
         </div>
         <div class="section">
-          <div class="section-header">
-            <p class="header-text">Nearest Medical Centre</p>
-          </div>
+          <q-list-header class="bg-indigo-4 text-white">Nearest Medical Centre</q-list-header>
         </div>
         <div class="map section">
           <p>{{jobSite.medical}}</p>
@@ -42,7 +36,7 @@
         </div>
       </q-scroll-area>
     </div>
-    <q-toolbar color="indigo-5" class="footer shadow-2">
+    <q-toolbar color="indigo-6" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
     </q-toolbar>
   </div>
@@ -53,7 +47,7 @@ export default {
   data () {
     return {
       jobSite: {},
-      header: { title: 'Emergency Information', color: 'indigo-5' }
+      header: { title: 'Emergency Information', color: 'indigo-6' }
     }
   },
   computed: {
@@ -75,18 +69,6 @@ export default {
 
   .container {
     padding-top: 10px;
-  }
-
-  .section-header {
-    background-color: #13416dba;
-    border-radius: 5px;
-  }
-
-  .header-text {
-    color: white;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 15px;
   }
 
   .content {

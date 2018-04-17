@@ -21,7 +21,15 @@ export default {
     height: 100vh;
   }
 
-  .container{
+  .q-layout-page-container {
+    height: 100vh;
+  }
+
+  .outer {
+    height: 100vh -50px;
+  }
+
+  .container {
     margin: 0 1.5vh;
   }
 

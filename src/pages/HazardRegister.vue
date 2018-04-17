@@ -24,7 +24,7 @@
         </q-collapsible>
       </q-scroll-area>
     </div>
-    <q-toolbar color="green-6" class="footer shadow-2">
+    <q-toolbar color="green-8" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
     </q-toolbar>
     <!--
@@ -38,7 +38,7 @@ export default {
   data () {
     return {
       jobSite: {},
-      header: { title: 'Hazard Register', color: 'green-6' }
+      header: { title: 'Hazard Register', color: 'green-8' }
     }
   },
   computed: {

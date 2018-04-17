@@ -7,9 +7,7 @@
     </q-modal>
     <div class="container">
       <q-scroll-area style="width: 100%; height: 75vh;">
-        <div class="section-header">
-            <p class="header-text">Please enter incident details</p>
-          </div>
+        <q-list-header class="bg-cyan-8 text-white">Please enter incident details</q-list-header>
         <div class="row">
           <q-select
             required
@@ -58,7 +56,7 @@
         </div>
       </q-scroll-area>
     </div>
-    <q-toolbar color="cyan-8" class="footer shadow-2">
+    <q-toolbar color="cyan-9" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
       <q-btn class="fixed shadow-8" size="lg" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="submit"/>
     </q-toolbar>
@@ -87,7 +85,7 @@ export default {
         type: ''
       },
       jobSite: {},
-      header: { title: 'Report an Incident', color: 'cyan-8' },
+      header: { title: 'Report an Incident', color: 'cyan-9' },
       incidentTypes: [
         { label: 'Near Miss', value: 'Near Miss' },
         { label: 'Minor Harm', value: 'Minor Harm' },
@@ -174,18 +172,6 @@ export default {
   }
   .q-scroll-area {
     margin-top: 10px;
-  }
-
-  .section-header {
-    background-color: #10698ac4;
-    border-radius: 5px;
-  }
-
-  .header-text {
-    color: white;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 15px;
   }
 
   .row {

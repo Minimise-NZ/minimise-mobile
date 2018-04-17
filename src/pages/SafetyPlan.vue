@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="outer">
     <div class="container">
       <q-list>
         <q-scroll-area>

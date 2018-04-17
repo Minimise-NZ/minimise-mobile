@@ -95,7 +95,7 @@ export default {
 
   .user-form {
     margin: 0 15px;
-    margin-top: 5vh;
+    margin-top: 10vh;
   }
 
   .headings {

@@ -425,11 +425,10 @@ const store = new Vuex.Store({
     submitFeedback ({state, commit}, payload) {
       // send an email to Minimse support
       let promise = new Promise((resolve, reject) => {
-        let subject = payload.type
         window.emailjs.send('my_service', 'support', {
           username: state.user.name,
           userEmail: state.user.email,
-          subject: subject,
+          subject: payload.subject,
           platform: 'mobile',
           details: payload.details
         })
