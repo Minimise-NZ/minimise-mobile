@@ -153,12 +153,12 @@ export default {
           this.$router.replace('/home')
         }
       } else {
+        this.loading = false
         this.$q.notify({
           message: 'You have not selected any hazards',
           position: 'bottom',
           timeout: 1000
         })
-        this.loading = false
       }
     },
     cancel () {
@@ -175,7 +175,7 @@ export default {
   }
 
   .q-list-header {
-    margin-top: 15px;
+    margin-top: 10px;
   }
 
   .q-item-label {

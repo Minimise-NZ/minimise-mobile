@@ -3,7 +3,7 @@
     <div class="container">
       <q-scroll-area style="width: 100%; height: 80vh;">
         <div class="section">
-          <q-list-header class="bg-grey-7 text-white">Site Contacts</q-list-header>
+          <q-list-header class="bg-orange-9 text-white">Site Contacts</q-list-header>
           <div class="content">
             <p>Site Manager: {{jobSite.projectManager}}</p>
             <p><q-icon name="phone"/><span>{{jobSite.PMcontact}}</span></p>
@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="section">
-          <q-list-header class="bg-grey-7 text-white">Emergency Contacts</q-list-header>
+          <q-list-header class="bg-orange-9 text-white">Emergency Contacts</q-list-header>
           <div class="content">
             <p><q-icon name="phone"/>Fire, Ambulance, Police: <span>111</span></p>
             <p><q-icon name="phone"/>Orion Faults: <span>0800 363 9898</span></p>
@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="section">
-          <q-list-header class="bg-grey-7 text-white">Nearest Medical Centre</q-list-header>
+          <q-list-header class="bg-orange-9 text-white">Nearest Medical Centre</q-list-header>
         </div>
         <div class="map section">
           <p>{{jobSite.medical}}</p>
@@ -68,7 +68,7 @@ export default {
   }
 
   .container {
-    padding-top: 10px;
+    padding-top: 5px;
   }
 
   .content {

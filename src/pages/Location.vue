@@ -70,14 +70,17 @@ export default {
                 this.$store.commit('setSiteHazards', plan.hazardRegister)
                 this.$store.commit('setTask', plan.taskAnalysis)
                 this.$store.dispatch('getNotMyHazards')
+                this.loading = false
                 this.$router.push('/home')
               }
             } else {
               console.log('There is no safety plan for this jobsite')
+              this.loading = false
               this.$router.push('/hazards')
             }
           })
           .catch((error) => {
+            this.loading = false
             console.log(error)
           })
       } else {
@@ -91,9 +94,11 @@ export default {
           this.$store.commit('setSiteHazards', [])
           this.$store.commit('setTask', {})
           this.$store.commit('setTaskRequired', false)
+          this.loading = false
           this.$router.push('/hazards')
         } else {
           console.log('Plan is current')
+          this.loading = false
           this.$router.push('/home')
         }
       }

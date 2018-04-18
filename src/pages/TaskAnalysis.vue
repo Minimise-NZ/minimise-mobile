@@ -2,7 +2,7 @@
   <div class="outer">
     <div class="container" v-if="currentTask === null">
       <q-list-header class="bg-blue-7 text-white" style="margin-bottom: 0">Please select Task Analysis</q-list-header>
-      <q-scroll-area style="width: 100%">
+      <q-scroll-area style="width: 100%; height: 70vh">
         <q-item v-for="(task, index) in tasks" :key="index" @click.native="showtask(task, index)">
           <q-item-main style="padding-left: 10px">
             <q-item-tile label style="padding: 20px 0">{{task.title}}</q-item-tile>
@@ -178,6 +178,7 @@ export default {
       this.loading = true
       this.$store.commit('setTaskRequired', false)
       this.$store.commit('setTask', this.task)
+      this.loading = false
       this.$router.replace('/home')
     },
     cancel () {
@@ -190,10 +191,17 @@ export default {
 
 <style scoped>
 
+  .outer {
+    padding: 0;
+    margin: 0;
+  }
+
   .container {
     padding-top: 10px;
     padding-left: 5px;
     padding-right: 5px;
+    padding-bottom: 0;
+    margin-bottom: 0;
   }
 
   .col-10, .col-1 {

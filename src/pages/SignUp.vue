@@ -82,11 +82,11 @@ export default {
           this.loading = false
         } catch (error) {
           console.log(error.message)
+          this.loading = false
           this.$q.dialog({
             title: 'Alert',
             message: error.message
           })
-          this.loading = false
         }
       })
     },

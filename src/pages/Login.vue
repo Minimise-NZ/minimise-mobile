@@ -65,6 +65,7 @@ export default {
               }
             })
             .catch((error) => {
+              this.loading = false
               this.$q.dialog({
                 title: 'Invalid email or password',
                 message: error.message

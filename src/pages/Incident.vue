@@ -7,7 +7,7 @@
     </q-modal>
     <div class="container">
       <q-scroll-area style="width: 100%; height: 75vh;">
-        <q-list-header class="bg-cyan-8 text-white">Please enter incident details</q-list-header>
+        <q-list-header class="bg-cyan-8 text-white keyboard-hide">Please enter incident details</q-list-header>
         <div class="row">
           <q-select
             required
@@ -56,7 +56,7 @@
         </div>
       </q-scroll-area>
     </div>
-    <q-toolbar color="cyan-9" class="footer shadow-2">
+    <q-toolbar color="cyan-9" class="footer shadow-2 keyboard-hide">
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
       <q-btn class="fixed shadow-8" size="lg" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="submit"/>
     </q-toolbar>
@@ -121,18 +121,21 @@ export default {
       // check that all fields are complete
       this.loading = true
       if (this.incident.type === '' || this.incident.description === '' || this.incident.corrective === '') {
+        this.loading = false
         this.$q.notify({
           message: 'Please complete all fields',
           position: 'bottom',
           timeout: 1000
         })
       } else if ((this.incident.type === 'Minor Harm' || this.incident.type === 'Serious Harm') && (this.incident.injuryDescription === '')) {
+        this.loading = false
         this.$q.notify({
           message: 'Please provide details of injury',
           position: 'bottom',
           timeout: 1000
         })
       } else if (this.incident.type === 'Plant Damage' && this.incident.plantDamage === '') {
+        this.loading = false
         this.$q.notify({
           message: 'Please provide details of plant damage',
           position: 'bottom',
@@ -149,10 +152,12 @@ export default {
         incident.reportedBy = this.user.name
         this.$store.dispatch('newIncident', incident)
           .then((response) => {
+            this.loading = false
             console.log(response)
             this.showModal = true
           })
           .catch((error) => {
+            this.loading = false
             console.log(error)
           })
       }
@@ -168,7 +173,7 @@ export default {
 
 <style scoped>
   .container {
-    padding: 10px;
+    padding: 5px;
   }
   .q-scroll-area {
     margin-top: 10px;
@@ -191,5 +196,11 @@ export default {
   .submit {
     width: 50%;
     margin: auto;
+  }
+
+  @media screen and (max-height: 300px) {
+    .keyboard-hide {
+      display: none;
+    }
   }
 </style>
