@@ -16,7 +16,7 @@
           v-validate="'required|min:6'"
           v-if="found"
           v-model="password"
-          data-vv-delay="2000"
+          data-vv-delay="3000"
           type="password"
           :before="[{icon: 'lock'}]"
           placeholder=' Password' />
@@ -87,6 +87,7 @@ export default {
             title: 'Alert',
             message: error.message
           })
+          this.$router.go(-1)
         }
       })
     },
@@ -102,10 +103,11 @@ export default {
           this.user.uid = uid
           await this.$store.dispatch('updateCurrentUser', this.user)
           await this.$store.dispatch('getUser')
-          // let companyType = this.user.companyType
+          await this.$store.dispatch('getJobs')
+          await this.$store.dispatch('getCompany')
           // go to location page
           this.loading = false
-          // this.$router.push()
+          this.$router.replace('/location')
         } catch (err) {
           this.loading = false
           console.log(err)
@@ -138,6 +140,9 @@ export default {
     margin-top: 5vh;
   }
 
+  .q-field {
+    margin-bottom: 20px;
+  }
  .buttons {
     padding-bottom: 5vh;
   }
@@ -156,6 +161,7 @@ export default {
     float: right;
     padding-top: 10px;
   }
+
   .alert-text {
     font-size: 0.7rem;
     color: red;
