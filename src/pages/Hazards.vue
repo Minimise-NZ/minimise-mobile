@@ -29,7 +29,7 @@
       <div class="container">
         <q-list highlight>
           <q-list-header class="bg-deep-orange-5 text-white">Please check your controls are in place</q-list-header>
-          <q-scroll-area style="width: 100%; height: 70vh;">
+          <q-scroll-area style="width: 100%; height: 65vh;">
             <q-item v-for="(control, index) of hazard.controls" :key="index">
               <q-item-main>
                 <q-item-tile style="padding-bottom: 15px">{{control.desc}}</q-item-tile>
@@ -56,7 +56,7 @@
         </div>
       </div>
     </q-modal>
-    <q-inner-loading :visible="loading" dark>
+    <q-inner-loading :visible="loading">
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
   </div>

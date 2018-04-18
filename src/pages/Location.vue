@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="outer">
     <q-toolbar class="shadow-2" color="deep-purple-5">
       <q-toolbar-title>
         Site Location
@@ -19,7 +19,7 @@
         </q-scroll-area>
       </q-list>
     </div>
-    <q-inner-loading :visible="loading" full-height dark>
+    <q-inner-loading :visible="loading">
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
   </div>
@@ -112,7 +112,7 @@ export default {
   }
 
   .q-list-header {
-    margin-top: 15px;
+    margin-top: 10px;
   }
 
   .q-item {
@@ -125,7 +125,7 @@ export default {
 
   .q-scroll-area {
     width: 100%;
-    height: 80vh;
+    height: 70vh;
   }
 
   @media screen and (orientation: landscape) {

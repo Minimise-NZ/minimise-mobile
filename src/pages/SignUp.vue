@@ -41,7 +41,7 @@
       <q-btn v-if="found" color="primary" rounded big @click="signup">Next</q-btn>
       <router-link to='/'>Go back</router-link>
     </div>
-    <q-inner-loading :visible="loading" dark>
+    <q-inner-loading :visible="loading">
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
   </div>

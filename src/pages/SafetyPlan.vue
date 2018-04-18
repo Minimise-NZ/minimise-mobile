@@ -60,7 +60,7 @@
       <q-btn @click="signIn" color="teal-6" v-if="signedIn === false">Sign In</q-btn>
       <q-btn @click="signOut" color="deep-orange-6" v-else>Sign Out</q-btn>
     </q-toolbar>
-    <q-inner-loading :visible="loading" dark>
+    <q-inner-loading :visible="loading">
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
   </div>

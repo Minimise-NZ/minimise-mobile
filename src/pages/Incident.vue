@@ -60,7 +60,7 @@
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
       <q-btn class="fixed shadow-8" size="lg" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="submit"/>
     </q-toolbar>
-    <q-inner-loading :visible="loading" dark>
+    <q-inner-loading :visible="loading">
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
   </div>

@@ -1,16 +1,16 @@
 <template>
   <div class="outer">
-    <div class="inner-container" v-if="currentTask === null">
+    <div class="container" v-if="currentTask === null">
       <q-list-header class="bg-blue-7 text-white" style="margin-bottom: 0">Please select Task Analysis</q-list-header>
       <q-scroll-area style="width: 100%">
         <q-item v-for="(task, index) in tasks" :key="index" @click.native="showtask(task, index)">
-          <q-item-main style="padding-left: 20px">
+          <q-item-main style="padding-left: 10px">
             <q-item-tile label style="padding: 20px 0">{{task.title}}</q-item-tile>
           </q-item-main>
         </q-item>
       </q-scroll-area>
     </div>
-    <div class="inner-container" v-else>
+    <div class="container" v-else>
       <q-list-header class="bg-blue-9 text-white" style="margin-bottom: 0">{{currentTask.title}}</q-list-header>
       <q-scroll-area style="width: 100%; height: 72vh">
         <div class="row justify-between" v-if="currentTask.ppeRequired === 'true'">
@@ -44,12 +44,12 @@
       </q-scroll-area>
     </div>
     <q-modal v-model="openModal">
-      <q-toolbar primary class="shadow-2">
+      <q-toolbar class="shadow-2 bg-blue-grey-8">
         <q-toolbar-title style="padding-left: 15px">{{task.title}}</q-toolbar-title>
       </q-toolbar>
-      <div class="inner-container">
+      <div class="container">
         <q-list-header class="bg-blue-8 text-white">Please review task steps</q-list-header>
-          <q-scroll-area style="width: 100%; height: 72vh">
+          <q-scroll-area style="width: 100%; height: 65vh">
             <div class="row justify-between" v-if="task.ppeRequired === 'true'">
               <div class="col-10">
                 <q-input :value="task.ppe" stack-label="PPE required" readonly/>
@@ -87,10 +87,10 @@
         <q-btn class="fixed shadow-8" size="md" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="saveTask"/>
       </div>
     </q-modal>
-    <q-toolbar color="blue-9" class="footer shadow-2">
+    <q-toolbar color="blue-grey-8" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.go(-1)" replace/>
     </q-toolbar>
-    <q-inner-loading :visible="loading" dark>
+    <q-inner-loading :visible="loading">
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
   </div>
@@ -101,7 +101,7 @@ import _ from 'lodash'
 export default {
   data () {
     return {
-      header: { title: 'Task Analysis', color: 'blue-9' },
+      header: { title: 'Task Analysis', color: 'blue-grey-8' },
       openModal: false,
       index: '',
       task: {},
@@ -190,8 +190,10 @@ export default {
 
 <style scoped>
 
-  .inner-container {
-    padding: 20px 15px 0 15px;
+  .container {
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
   }
 
   .col-10, .col-1 {

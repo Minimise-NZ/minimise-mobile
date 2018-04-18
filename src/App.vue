@@ -58,4 +58,8 @@ export default {
     color: #027be3;
   }
 
+  .q-inner-loading {
+    height: 100vh
+  }
+
 </style>

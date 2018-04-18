@@ -3,7 +3,7 @@
     <div class="container">
       <q-scroll-area style="width: 100%; height: 80vh;">
         <div class="section">
-          <q-list-header class="bg-indigo-4 text-white">Site Contacts</q-list-header>
+          <q-list-header class="bg-grey-7 text-white">Site Contacts</q-list-header>
           <div class="content">
             <p>Site Manager: {{jobSite.projectManager}}</p>
             <p><q-icon name="phone"/><span>{{jobSite.PMcontact}}</span></p>
@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="section">
-          <q-list-header class="bg-indigo-4 text-white">Emergency Contacts</q-list-header>
+          <q-list-header class="bg-grey-7 text-white">Emergency Contacts</q-list-header>
           <div class="content">
             <p><q-icon name="phone"/>Fire, Ambulance, Police: <span>111</span></p>
             <p><q-icon name="phone"/>Orion Faults: <span>0800 363 9898</span></p>
@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="section">
-          <q-list-header class="bg-indigo-4 text-white">Nearest Medical Centre</q-list-header>
+          <q-list-header class="bg-grey-7 text-white">Nearest Medical Centre</q-list-header>
         </div>
         <div class="map section">
           <p>{{jobSite.medical}}</p>
@@ -36,7 +36,7 @@
         </div>
       </q-scroll-area>
     </div>
-    <q-toolbar color="indigo-6" class="footer shadow-2">
+    <q-toolbar color="red-7" class="footer shadow-2">
       <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
     </q-toolbar>
   </div>
@@ -47,7 +47,7 @@ export default {
   data () {
     return {
       jobSite: {},
-      header: { title: 'Emergency Information', color: 'indigo-6' }
+      header: { title: 'Emergency Information', color: 'red-7' }
     }
   },
   computed: {
@@ -64,7 +64,7 @@ export default {
 
 <style scoped>
   .q-scroll-area {
-    margin-top: 10px;
+    margin-top: 5px;
   }
 
   .container {
