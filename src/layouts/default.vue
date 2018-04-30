@@ -57,18 +57,6 @@
               </q-btn-group>
             </q-card>
           </q-collapsible>
-          <q-item @click.native="openURL('https://www.facebook.com/MinimiseNZ/')">
-            <q-item-side icon="group" />
-            <q-item-main label="Facebook" sublabel="minimise-NZ" />
-          </q-item>
-          <q-item @click.native="openURL('https://twitter.com/MinimiseNZ')">
-            <q-item-side icon="rss feed" />
-            <q-item-main label="Twitter" sublabel="@minimiseNZ" />
-          </q-item>
-          <q-item @click.native="openURL('https://minimisesafetyapp.com/')" >
-            <q-item-side icon="web" />
-            <q-item-main label="Website" sublabel="minimisesafetyapp.com"/>
-          </q-item>
           <q-item-separator />
           <q-list-header class="drawer-header">Current Site Location</q-list-header>
             <q-item>

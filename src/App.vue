@@ -1,12 +1,34 @@
 <template>
   <div id="q-app">
-    <router-view />
+    <disconnected v-show="OfflineOnly"></disconnected>
+    <router-view v-show="OnlineOnly"/>
   </div>
 </template>
 
 <script>
+import Disconnected from './components/disconnected'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    'disconnected': Disconnected
+  },
+  data () {
+    return {
+      onlineState: navigator.onLine
+    }
+  },
+  created () {
+    this.$on('online', function () {
+      alert("I'm online now!")
+      this.$store.dispatch('getJobs')
+        .then(() => {
+          window.location.reload(true)
+        })
+    })
+    this.$on('offline', function () {
+      alert("I'm offline now!")
+    })
+  }
 }
 </script>
 

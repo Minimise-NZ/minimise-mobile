@@ -8,7 +8,7 @@
     <div class="container">
       <q-list highlight>
         <q-list-header class="bg-purple-4 text-white">Please select your job site</q-list-header>
-        <q-scroll-area>
+        <q-scroll-area >
           <q-item @click.native="setLocation(job)" v-for="job in jobs" :key="job.id">
             <q-item-side icon="home"></q-item-side>
             <q-item-main>
@@ -39,6 +39,9 @@ export default {
     currentSafetyPlan () {
       return this.$store.getters.safetyPlan
     }
+  },
+  created () {
+    this.jobs = this.$store.getters.jobs
   },
   methods: {
     setLocation (job) {
@@ -103,9 +106,6 @@ export default {
         }
       }
     }
-  },
-  beforeCreate () {
-    this.jobs = this.$store.getters.jobs
   }
 }
 </script>
@@ -131,6 +131,18 @@ export default {
   .q-scroll-area {
     width: 100%;
     height: 70vh;
+  }
+
+  .connection-error {
+    margin: auto;
+    margin-top: 5vh;
+    width: 90vw;
+    height: 20vh;
+    padding: 20px;
+    line-height: 30px;
+    background-color: lightgrey;
+    border-radius: 15px;
+    text-align: center;
   }
 
   @media screen and (orientation: landscape) {

@@ -3,7 +3,8 @@
 module.exports = function (ctx) {
   return {
     plugins: [
-      'vee-validate'
+      'vee-validate',
+      'vue-offline'
     ],
     css: [
       'app.styl'

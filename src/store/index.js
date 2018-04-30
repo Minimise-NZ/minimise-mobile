@@ -294,7 +294,7 @@ const store = new Vuex.Store({
             }
           })
           .catch((error) => {
-            console.log(error)
+            reject(error)
           })
       })
       return promise
@@ -363,7 +363,7 @@ const store = new Vuex.Store({
         dispatch('updateCurrentUser', {email: payload})
       }).catch(function (error) {
         // An error happened.
-        console.log(error)
+        return (error)
       })
     },
     getJobs ({commit, state}) {
