@@ -31,6 +31,8 @@ export default {
       loading: false
     }
   },
+  created () {
+  },
   computed: {
   },
   methods: {

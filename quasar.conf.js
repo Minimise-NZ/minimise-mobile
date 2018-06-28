@@ -23,11 +23,12 @@ module.exports = function (ctx) {
     },
     build: {
       scopeHoisting: true,
-      vueRouterMode: 'history',
+      vueRouterMode: 'history'
       // gzip: true,
       // analyze: true,
       // extractCSS: false,
       // useNotifier: false,
+      /*
       extendWebpack (cfg) {
         cfg.module.rules.push({
           enforce: 'pre',
@@ -36,6 +37,7 @@ module.exports = function (ctx) {
           exclude: /(node_modules|quasar)/
         })
       }
+      */
     },
     devServer: {
       // https: true,

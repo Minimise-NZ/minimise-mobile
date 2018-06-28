@@ -1,7 +1,7 @@
 <template>
   <div id="q-app">
-    <disconnected v-show="OfflineOnly"></disconnected>
-    <router-view v-show="OnlineOnly"/>
+    <disconnected v-show="!online"></disconnected>
+    <router-view v-show="online"/>
   </div>
 </template>
 
@@ -14,20 +14,30 @@ export default {
   },
   data () {
     return {
-      onlineState: navigator.onLine
+    }
+  },
+  computed: {
+    online () {
+      var networkState = navigator.connection.type
+      var states = {}
+      states[Connection.UNKNOWN] = 'Unknown connection'
+      states[Connection.ETHERNET] = 'Ethernet connection'
+      states[Connection.WIFI]  = 'WiFi connection'
+      states[Connection.CELL_2G] = 'Cell 2G connection'
+      states[Connection.CELL_3G] = 'Cell 3G connection'
+      states[Connection.CELL_4G] = 'Cell 4G connection'
+      states[Connection.CELL] = 'Cell generic connection'
+      states[Connection.NONE] = 'No network connection'
+      if (networkState === Connection.NONE) {
+        return false
+      } else {
+        console.log('Connection type: ' + states[networkState])
+        return true
+      }
     }
   },
   created () {
-    this.$on('online', function () {
-      alert("I'm online now!")
-      this.$store.dispatch('getJobs')
-        .then(() => {
-          window.location.reload(true)
-        })
-    })
-    this.$on('offline', function () {
-      alert("I'm offline now!")
-    })
+    console.log(navigator)
   }
 }
 </script>

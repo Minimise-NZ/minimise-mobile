@@ -1,6 +1,6 @@
 {
   "name": "minimise-mobile",
-  "version": "1.13",
+  "version": "1.15",
   "description": "Simple safety on construction sites",
   "productName": "Minimise",
   "cordovaId": "com.minimisesafetyapp",
@@ -16,6 +16,7 @@
     "firebase": "^4.10.1",
     "firebase-auth": "^0.1.2",
     "moment": "^2.21.0",
+    "quasar-cli": "^0.15.20",
     "v-offline": "^1.0.8",
     "vee-validate": "^2.0.4",
     "vue-offline": "^1.0.7",
@@ -32,8 +33,7 @@
     "eslint-plugin-node": "5.2.0",
     "eslint-plugin-promise": "3.4.0",
     "eslint-plugin-standard": "3.0.1",
-    "eslint-plugin-vue": "4.0.0",
-    "quasar-cli": "^0.15.11"
+    "eslint-plugin-vue": "4.0.0"
   },
   "engines": {
     "node": ">= 8.9.0",
