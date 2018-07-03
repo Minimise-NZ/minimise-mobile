@@ -47,24 +47,18 @@ export default {
         } else {
           this.loading = true
           this.$store.dispatch('logIn', {email: this.email, password: this.password})
-            .then(async () => {
-              let user = await this.$store.dispatch('getUser')
-              // check that user companyType is not principal
-              if (user.companyType === 'principal') {
-                this.$q.dialog({
-                  title: 'Incorrect user type',
-                  message: 'Please log in to web application'
-                })
-                this.$store.dispatch('logout')
-                this.$router.replace('/')
-              } else {
+            .then(() => {
+              this.$store.dispatch('getUser')
+              .then(() => {
+                this.$store.dispatch('getCompany')
                 this.$store.dispatch('getJobs')
-                  .then(() => {
-                    this.$store.dispatch('getCompany')
-                    console.log('user logged in', user)
-                    this.$router.replace('/location')
-                  })
-              }
+                this.$store.dispatch('getHazards')
+                //this.$store.dispatch('getSubstances')
+                this.$store.dispatch('getTasks')
+              })
+              .then(() => {
+                this.$router.replace('/location')
+              })
             })
             .catch((error) => {
               this.loading = false

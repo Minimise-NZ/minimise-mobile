@@ -3,7 +3,7 @@
     <div class="container">
       <q-list>
         <q-scroll-area>
-          <q-item @click.native="$router.push('/home/emergency')" replace>
+          <q-item @click.native="$router.push('/home/emergency')" replace style="padding-top: 30px">
             <q-item-side>
               <img src="statics/emergency-phone.jpg">
             </q-item-side>
@@ -44,15 +44,6 @@
               <q-item-tile sublabel>Coming Soon</q-item-tile>
             </q-item-main>
           </q-item>
-          <q-item>
-            <q-item-side>
-              <img src="statics/environmental.jpg">
-            </q-item-side>
-            <q-item-main style="padding-left: 20px">
-              <q-item-tile label>Environmental Plan</q-item-tile>
-              <q-item-tile sublabel>Coming Soon</q-item-tile>
-            </q-item-main>
-          </q-item>
         </q-scroll-area>
       </q-list>
     </div>
@@ -88,7 +79,7 @@ export default {
     signIn () {
       // sign user in
       this.loading = true
-      this.$store.dispatch('signIn')
+      this.$store.dispatch('jobSignIn')
         .then((response) => {
           console.log(response)
           this.loading = false
@@ -137,7 +128,7 @@ export default {
     width: 80%;
     margin: auto;
     border-radius: 5px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
   }
 
 </style>

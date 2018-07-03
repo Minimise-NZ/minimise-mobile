@@ -75,7 +75,7 @@ export default {
   },
   computed: {
     hazards () {
-      return this.$store.getters.company.hazards
+      return this.$store.getters.allHazards
     },
     selectedHazards () {
       return this.$store.getters.siteHazards

@@ -5,10 +5,8 @@
         <div class="section">
           <q-list-header class="bg-cyan-9 text-white">Site Contacts</q-list-header>
           <div class="content">
-            <p>Site Manager: {{jobSite.projectManager}}</p>
-            <p><q-icon name="phone"/><span>{{jobSite.PMcontact}}</span></p>
-            <p>HSE Manager: {{jobSite.HSEManager}}</p>
-            <p><q-icon name="phone"/><span>{{jobSite.HSEcontact}}</span> </p>
+            <p>Site Manager: {{jobSite.supervisorName}}</p>
+            <p><q-icon name="phone"/><span>{{jobSite.supervisorPhone}}</span></p>
           </div>
         </div>
         <div class="section">
@@ -24,8 +22,6 @@
           <q-list-header class="bg-cyan-9 text-white">Nearest Medical Centre</q-list-header>
         </div>
         <div class="map section">
-          <p>{{jobSite.medical}}</p>
-          <p><q-icon name="phone"/><span>{{jobSite.medPhone}}</span></p>
           <iframe
           width="100%"
           height="320px"

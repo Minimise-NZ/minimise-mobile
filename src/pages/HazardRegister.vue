@@ -37,17 +37,20 @@
 export default {
   data () {
     return {
-      jobSite: {},
       header: { title: 'Hazard Register', color: 'green-8' }
     }
   },
   computed: {
+    jobSite () {
+      return this.$store.getters.jobSite
+    },
+    hazards () {
+      return this.$store.getters.safetyPlan.hazardRegister
+    }
   },
   methods: {
   },
   beforeMount () {
-    this.jobSite = this.$store.getters.jobSite
-    this.hazards = this.$store.getters.siteHazards
     this.$store.dispatch('updateHeader', this.header)
   }
 }

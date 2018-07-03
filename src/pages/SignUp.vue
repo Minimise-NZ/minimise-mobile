@@ -61,6 +61,9 @@ export default {
     }
   },
   computed: {
+    uid () {
+      return this.$store.getters.uid
+    }
   },
   methods: {
     findUser () {
@@ -98,16 +101,17 @@ export default {
         try {
           this.loading = true
           // create new user in firebase
-          let uid = await this.$store.dispatch('signUp', {email: this.email, password: this.password})
-          // update userProfile with uid
-          this.user.uid = uid
-          await this.$store.dispatch('updateCurrentUser', this.user)
-          await this.$store.dispatch('getUser')
-          await this.$store.dispatch('getJobs')
-          await this.$store.dispatch('getCompany')
-          // go to location page
-          this.loading = false
-          this.$router.replace('/location')
+          this.$store.dispatch('signUp', {email: this.email, password: this.password})
+          .then(() => {
+            setTimeout(() => { 
+              this.$store.dispatch('updateCurrentUser', {uid: this.uid}) 
+            }, 3000)
+            this.$store.dispatch('getJobs')
+            this.$store.dispatch('getCompany')
+            // get hazards, substances and tasks
+            this.loading = false
+            this.$router.replace('/location')
+            })
         } catch (err) {
           this.loading = false
           console.log(err)

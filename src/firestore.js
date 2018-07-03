@@ -20,3 +20,5 @@ firebase.auth().onAuthStateChanged(function (user) {
 })
 
 export const firestore = firebaseApp.firestore()
+const settings = {/* your settings... */ timestampsInSnapshots: true};
+  firestore.settings(settings);

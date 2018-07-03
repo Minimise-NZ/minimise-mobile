@@ -28,8 +28,7 @@ const store = new Vuex.Store({
     taskRequired: false,
     task: {},
     tasks: [],
-    allHazards: [],
-    siteHazards: []
+    allHazards: []
   },
   mutations: {
     clearStore (state) {
@@ -47,7 +46,6 @@ const store = new Vuex.Store({
       state.task = {}
       state.tasks = []
       state.allHazards = []
-      state.siteHazards = []
     },
     setHeader (state, payload) {
       state.header = payload
@@ -67,9 +65,6 @@ const store = new Vuex.Store({
     setSafetyPlan (state, payload) {
       state.safetyPlan = payload
     },
-    setTimecard (state, payload) {
-      state.safetyPlan.timecard = payload
-    },
     setCompanyKey (state, payload) {
       state.companyKey = payload
     },
@@ -82,6 +77,9 @@ const store = new Vuex.Store({
     setJob (state, payload) {
       state.jobSite = payload
     },
+    setAllHazards (state, payload) {
+      state.allHazards = payload
+    },
     setTaskRequired (state, payload) {
       state.taskRequired = payload
     },
@@ -93,9 +91,6 @@ const store = new Vuex.Store({
     },
     setAllHazards (state, payload) {
       state.allHazards = payload
-    },
-    setSiteHazards (state, payload) {
-      state.siteHazards = payload
     }
   },
   actions: {
@@ -103,13 +98,50 @@ const store = new Vuex.Store({
       let header = payload
       commit('setHeader', header)
     },
-    signUp ({commit}, payload) {
+    autoLogIn ({commit, state, dispatch}, payload) {
+      console.log('auto log in')
+      commit('setUID', payload)
+      if (state.user === {}) {
+        dispatch('getUser')
+      }
+    },
+    updateEmail ({state, commit, dispatch}, payload) {
+      var user = firebase.auth().currentUser
+      user.updateEmail(payload).then(function () {
+        // Update successful.
+        console.log('email updated successfully')
+        dispatch('updateCurrentUser', {email: payload})
+      }).catch(function (error) {
+        // An error happened.
+        return (error)
+      })
+    },
+    signUp ({}, payload) {
       // create a new user in firebase
+      console.log('signing up', payload)
       let promise = new Promise((resolve, reject) => {
         firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-          .then((user) => {
-            commit('setUID', user.uid)
-            resolve(user.uid)
+          .then(() => {
+            resolve()
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+      return promise
+    },
+    updateCurrentUser ({state, dispatch}, payload) {
+      console.log('updating user', payload)
+      let promise = new Promise((resolve, reject) => {
+        firestore.collection('users').doc(state.userKey)
+          .get()
+          .then((doc) => {
+            firestore.collection('users').doc(doc.id).set(payload, {merge: true})
+              .then(() => {
+                console.log('User updated')
+                dispatch('getUser')
+                resolve()
+              })
           })
           .catch((error) => {
             reject(error)
@@ -133,88 +165,11 @@ const store = new Vuex.Store({
       })
       return promise
     },
-    autoLogIn ({commit, state, dispatch}, payload) {
-      commit('setUID', payload)
-      if (state.user === {}) {
-        dispatch('getUser')
-      }
-    },
     logout ({commit, dispatch}) {
       firebase.auth().signOut()
       commit('clearStore')
       localStorage.clear()
       console.log(window.history.length)
-    },
-    signIn ({commit, state, dispatch}) {
-      // if there is no current safety plan, create safety plan and save to firestore
-      let promise = new Promise((resolve, reject) => {
-        let plan = state.safetyPlan
-        if (_.isEmpty(plan) || plan === undefined || plan === null) {
-          // create a safety plan
-          console.log('No safety plan exists')
-          plan.workerKey = state.userKey
-          plan.workerName = state.user.name
-          plan.contractorKey = state.user.company
-          plan.principalKey = state.jobSite.principalKey
-          plan.createdDate = today
-          plan.expiryDate = expiryDate
-          plan.jobId = state.jobSite.id
-          plan.jobAddress = state.jobSite.address
-          plan.hazardRegister = state.siteHazards
-          plan.taskAnalysis = state.task
-          plan.trainingRegister = state.user.training
-          plan.signedIn = true
-          console.log(plan)
-          firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.userKey).set(plan)
-            .then((doc) => {
-              commit('setSignedIn', true)
-              commit('setSafetyPlan', plan)
-              dispatch('autoSignOut')
-              resolve('Safety Plan added to firestore')
-            })
-            .catch((error) => {
-              reject(error)
-            })
-        } else if (today > plan.expiryDate) {
-          // if a safety plan exists but has expired
-          console.log('Plan has expired')
-          plan.createdDate = today
-          plan.expiryDate = expiryDate
-          plan.hazardRegister = state.siteHazards
-          plan.taskAnalysis = state.task
-          plan.trainingRegister = state.user.training
-          plan.signedIn = true
-          firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.userKey).set(state.safetyPlan, {merge: true})
-          commit('setSafetyPlan', plan)
-          commit('setSignedIn', true)
-          dispatch('autoSignOut')
-          resolve('Updated safety plan')
-        } else {
-          // if a safety plan exists and has not expired then sign onto it
-          let plan = state.safetyPlan
-          plan.signedIn = true
-          commit('setSafetyPlan', plan)
-          firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.userKey).set(state.safetyPlan)
-          commit('setSignedIn', true)
-          dispatch('autoSignOut')
-          resolve('Signed into safety plan')
-        }
-      })
-      return promise
-    },
-    autoSignOut ({ commit }) {
-      setTimeout(() => {
-        commit('setSignedIn', false)
-        router.replace('/')
-      }, 10 * 60 * 60 * 1000)
-    },
-    signOut ({commit, state}) {
-      let plan = state.safetyPlan
-      plan.signedIn = false
-      commit('setSafetyPlan', plan)
-      firestore.collection('jobSites').doc(state.jobSite.id).collection('safetyPlans').doc(state.userKey).set(state.safetyPlan)
-      commit('setSignedIn', false)
-      router.replace('/')
     },
     findUser ({state, commit}, payload) {
       let promise = new Promise((resolve, reject) => {
@@ -251,9 +206,9 @@ const store = new Vuex.Store({
               let user = doc.data()
               commit('setUser', user)
               commit('setUserKey', doc.id)
-              commit('setCompanyKey', user.company)
+              commit('setCompanyKey', user.companyKey)
               console.log('User profile set')
-              resolve(user)
+              resolve()
             })
           })
           .catch((error) => {
@@ -277,11 +232,65 @@ const store = new Vuex.Store({
       })
       return promise
     },
+    autoSignOut ({ commit }) {
+      setTimeout(() => {
+        commit('setSignedIn', false)
+        router.replace('/')
+      }, 10 * 60 * 60 * 1000)
+    },
+    signOut ({commit, state}) {
+      let plan = state.safetyPlan
+      plan.signedIn = false
+      commit('setSafetyPlan', plan)
+      firestore.collection('safetyPlans').doc(plan.id).set(state.safetyPlan)
+      commit('setSignedIn', false)
+      router.replace('/')
+    },
+    getJobs ({commit, state}) {
+      // get all jobs in progress that this worker is assigned to
+      let promise = new Promise((resolve, reject) => {
+        firestore.collection('jobSites').where('companyKey', '==', state.companyKey).where('open', '==', true)
+          .get()
+          .then((snapshot) => {
+            console.log(snapshot)
+            let jobs = []
+            snapshot.forEach((doc) => {
+              console.log(doc.data())
+              let job = doc.data()
+              jobs.push({
+                id: doc.id,
+                address: job.address,
+                companyKey: job.companyKey,
+                companyName: job.companyName,
+                date: job.date,
+                environmental: job.environmental,
+                environmentalurl: job.environmentalurl,
+                medical: job.medical,
+                notifiable: job.notifiable,
+                notifiableurl: job.notifiableurl,
+                open: job.open,
+                resource: job.resource,
+                resourceurl: job.resourceurl,
+                supervisorKey: job.supervisorKey,
+                supervisorName: job.supervisorName,
+                supervisorPhone: job.supervisorPhone
+              })
+            })
+            commit('setJobs', jobs)
+            resolve()
+          })
+          .catch((error) => {
+            console.log('Error getting documents: ', error)
+            reject(error)
+          })
+      })
+      return promise
+    },
     getSafetyPlan ({commit, state}, payload) {
       let promise = new Promise((resolve, reject) => {
         let jobId = payload
         console.log('getting safety plan for job', jobId)
-        firestore.collection('jobSites').doc(jobId).collection('safetyPlans').doc(state.userKey)
+        firestore.collection('safetyPlans').where('jobId', '==', state.jobSite.id).where('workerKey', '==', state.userKey )
           .get()
           .then((doc) => {
             if (doc.exists) {
@@ -321,10 +330,31 @@ const store = new Vuex.Store({
         return state.tasks
       }
     },
+    getHazards ({commit, state}) {
+      if (state.allHazards.length < 1) {
+        console.log('getting hazards')
+        firestore.collection('companies').doc(state.companyKey)
+          .collection('hazards')
+          .get()
+          .then((snapshot) => {
+            let hazards = []
+            snapshot.forEach((doc) => {
+              hazards.push(doc.data())
+            })
+            commit('setAllHazards', hazards)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      } else {
+        console.log('Hazards already in store')
+        return state.tasks
+      }
+    },
     getNotMyHazards ({commit, state}) {
-      let myHazards = state.siteHazards
+      let myHazards = state.safetyPlan.hazardRegister
       console.log('My Hazards', myHazards)
-      let allHazards = state.company.hazards.slice(0)
+      let allHazards = state.allHazards.slice(0)
       if (myHazards.length !== 0) {
         for (var i = 0; i < allHazards.length; i++) {
           for (var j = 0; j < myHazards.length; j++) {
@@ -337,72 +367,69 @@ const store = new Vuex.Store({
       console.log(allHazards)
       commit('setAllHazards', allHazards)
     },
-    updateCurrentUser ({state, commit, dispatch}, payload) {
+    jobSignIn ({commit, state, dispatch}) {
       let promise = new Promise((resolve, reject) => {
-        firestore.collection('users').doc(state.userKey)
-          .get()
+        let plan = state.safetyPlan
+        if (_.isEmpty(plan) || plan === undefined || plan === null) {
+          // if there is no current safety plan, create safety plan and save to firestore
+          // create a safety plan
+          console.log('No safety plan exists')
+          plan.companyKey = state.companyKey
+          plan.createdDate = today
+          plan.expiryDate = expiryDate
+          plan.hazardRegister = state.siteHazards
+          plan.jobId = state.jobSite.id
+          plan.jobAddress = state.jobSite.address
+          plan.signedIn = true
+          plan.taskAnalysis = state.task
+          plan.trainingRegister = state.user.training
+          plan.workerKey = state.userKey
+          plan.workerName = state.user.name
+          console.log(plan)
+          firestore.collection('safetyPlans').doc().set(plan, {merge: true})
           .then((doc) => {
-            firestore.collection('users').doc(doc.id).set(payload, {merge: true})
-              .then(() => {
-                console.log('User updated')
-                dispatch('getUser')
-                resolve()
-              })
+            commit('setSignedIn', true)
+            commit('setSafetyPlan', plan)
+            dispatch('autoSignOut')
+            resolve('Safety Plan added to firestore')
           })
           .catch((error) => {
             reject(error)
           })
-      })
-      return promise
-    },
-    updateEmail ({state, commit, dispatch}, payload) {
-      var user = firebase.auth().currentUser
-      user.updateEmail(payload).then(function () {
-        // Update successful.
-        console.log('email updated successfully')
-        dispatch('updateCurrentUser', {email: payload})
-      }).catch(function (error) {
-        // An error happened.
-        return (error)
-      })
-    },
-    getJobs ({commit, state}) {
-      // get all jobs in progress that this worker is assigned to
-      let promise = new Promise((resolve, reject) => {
-        let approvedkey = 'approved.' + state.companyKey
-        firestore.collection('jobSites').where(approvedkey, '==', true)
-          .get()
-          .then((snapshot) => {
-            console.log(snapshot)
-            let jobs = []
-            snapshot.forEach((doc) => {
-              console.log(doc.data())
-              let job = doc.data()
-              jobs.push({
-                id: doc.id,
-                address: job.address,
-                principal: job.principalName,
-                principalKey: job.principalKey,
-                projectManager: job.pm,
-                pmKey: job.pmKey,
-                PMcontact: job.pmPhone,
-                HSEManager: job.hse,
-                HSEcontact: job.hsePhone,
-                hseKey: job.hseKey,
-                date: today,
-                notifiable: job.notifiable,
-                info: job.info,
-                medical: job.medical,
-                medPhone: job.medPhone
-              })
-            })
-            commit('setJobs', jobs)
-            resolve()
+        } else if (today > plan.expiryDate) {
+          console.log('Plan expired')
+          plan.companyKey = state.companyKey
+          plan.createdDate = today
+          plan.expiryDate = expiryDate
+          plan.hazardRegister = state.siteHazards
+          plan.jobId = state.jobSite.id
+          plan.jobAddress = state.jobSite.address
+          plan.signedIn = true
+          plan.taskAnalysis = state.task
+          plan.trainingRegister = state.user.training
+          plan.workerKey = state.userKey
+          plan.workerName = state.user.name
+          console.log(plan)
+          firestore.collection('safetyPlans').doc(plan.id).set(plan, {merge: true})
+          .then((doc) => {
+            commit('setSignedIn', true)
+            commit('setSafetyPlan', plan)
+            dispatch('autoSignOut')
+            resolve('Safety Plan added to firestore')
           })
           .catch((error) => {
-            console.log('Error getting documents: ', error)
             reject(error)
           })
+
+        } else {
+          // if a safety plan exists and has not expired then sign onto it
+          plan.signedIn = true
+          commit('setSafetyPlan', plan)
+          firestore.collection('safetyPlans').doc(plan.id).set(plan, {merge: true})
+          commit('setSignedIn', true)
+          dispatch('autoSignOut')
+          resolve('Signed into safety plan')
+        }
       })
       return promise
     },
@@ -448,6 +475,7 @@ const store = new Vuex.Store({
   },
   getters: {
     user: (state) => state.user,
+    uid: (state) => state.uid,
     userKey: (state) => state.userKey,
     company: (state) => state.company,
     signedIn: (state) => state.signedIn,
@@ -455,7 +483,6 @@ const store = new Vuex.Store({
     safetyPlan: (state) => state.safetyPlan,
     jobSite: (state) => state.jobSite,
     allHazards: (state) => state.allHazards,
-    siteHazards: (state) => state.siteHazards,
     tasks: (state) => state.tasks,
     task: (state) => state.task,
     taskRequired: (state) => state.taskRequired,

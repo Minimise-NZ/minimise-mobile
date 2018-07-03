@@ -144,11 +144,9 @@ export default {
       } else {
         // save to firestore
         let incident = this.incident
-        incident.actionOwner = {key: this.jobSite.pmKey, name: this.jobSite.projectManager}
         incident.address = this.jobSite.address
-        incident.company = this.jobSite.principalKey
+        incident.company = this.jobSite.companyKey
         incident.injury = this.injury
-        incident.loggedBy = {key: this.userKey, name: this.user.name}
         incident.reportedBy = this.user.name
         this.$store.dispatch('newIncident', incident)
           .then((response) => {

@@ -38,10 +38,10 @@ export default {
   computed: {
     currentSafetyPlan () {
       return this.$store.getters.safetyPlan
+    },
+    jobs () {
+      return this.$store.getters.jobs
     }
-  },
-  created () {
-    this.jobs = this.$store.getters.jobs
   },
   methods: {
     setLocation (job) {
@@ -51,8 +51,6 @@ export default {
       if (_.isEmpty(this.currentSafetyPlan) || this.currentSafetyPlan.jobId !== job.id) {
         // clear store
         this.$store.commit('setSafetyPlan', {})
-        this.$store.commit('setAllHazards', [])
-        this.$store.commit('setSiteHazards', [])
         this.$store.commit('setTask', {})
         this.$store.commit('setTaskRequired', false)
         // retrieve safety plan from firestore if there is one
@@ -62,7 +60,6 @@ export default {
             if (response !== null) {
               let plan = response
               if (today > plan.expiryDate) {
-                console.log('plan has expired')
                 this.$q.dialog({
                   title: 'Safety Plan has expired',
                   message: 'Please create a new safety plan'
@@ -70,14 +67,12 @@ export default {
                 this.$router.push('/hazards')
               } else {
                 // Plan has not expired. Set items in store
-                this.$store.commit('setSiteHazards', plan.hazardRegister)
                 this.$store.commit('setTask', plan.taskAnalysis)
                 this.$store.dispatch('getNotMyHazards')
                 this.loading = false
                 this.$router.push('/home')
               }
             } else {
-              console.log('There is no safety plan for this jobsite')
               this.loading = false
               this.$router.push('/hazards')
             }
@@ -93,8 +88,6 @@ export default {
             title: 'Safety Plan has expired',
             message: 'Please create a new safety plan'
           })
-          this.$store.commit('setAllHazards', [])
-          this.$store.commit('setSiteHazards', [])
           this.$store.commit('setTask', {})
           this.$store.commit('setTaskRequired', false)
           this.loading = false
