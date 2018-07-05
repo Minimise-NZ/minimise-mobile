@@ -78,9 +78,8 @@ export default {
         company: '',
         corrective: '',
         description: '',
-        escalate: false,
         injuryDescription: '',
-        open: true,
+        open: 'true',
         plantDamage: '',
         type: ''
       },
@@ -148,6 +147,8 @@ export default {
         incident.company = this.jobSite.companyKey
         incident.injury = this.injury
         incident.reportedBy = this.user.name
+        incident.supervisorKey = this.jobSite.supervisorKey
+        incident.supervisorName = this.jobSite.supervisorName
         this.$store.dispatch('newIncident', incident)
           .then((response) => {
             this.loading = false

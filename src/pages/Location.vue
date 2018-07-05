@@ -50,7 +50,6 @@ export default {
       // check if a safety plan is already in store
       if (_.isEmpty(this.currentSafetyPlan) || this.currentSafetyPlan.jobId !== job.id) {
         // clear store
-        this.$store.commit('setSafetyPlan', {})
         this.$store.commit('setTask', {})
         this.$store.commit('setTaskRequired', false)
         // retrieve safety plan from firestore if there is one
@@ -98,6 +97,11 @@ export default {
           this.$router.push('/home')
         }
       }
+    }
+  },
+  created () {
+    if (this.$store.getters.allHazards.length <  1) {
+      this.$store.dispatch('getHazards')
     }
   }
 }

@@ -72,7 +72,7 @@
               <q-item-main label="Sign out"/>
             </q-item>
           </div>
-          <q-item v-if="signedIn !== true" @click.native="$router.replace('/location')">
+          <q-item v-if="signedIn !== true" @click.native="changeLocation">
             <q-item-side icon="refresh" />
             <q-item-main label="Change location"/>
           </q-item>
@@ -132,6 +132,10 @@ export default {
     this.originalUser = copy
   },
   methods: {
+    changeLocation () {
+      this.$store.commit('setJob', {})
+      this.$router.push('/location')
+    },
     openURL,
     editMode () {
       this.readonly = false

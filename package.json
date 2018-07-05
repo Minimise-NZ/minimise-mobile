@@ -1,7 +1,7 @@
 {
   "name": "minimise-mobile",
-  "version": "1.15",
-  "description": "Simple safety on construction sites",
+  "version": "1.16",
+  "description": "Simple site safety",
   "productName": "Minimise",
   "cordovaId": "com.minimisesafetyapp",
   "author": "MinimiseNZ",

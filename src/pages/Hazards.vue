@@ -52,7 +52,7 @@
         </q-list>
         <div class="buttons">
           <q-btn class="fixed shadow-8" size="md" style="left: 18px; bottom: 18px" round color="negative" icon="clear" @click="cancel"/>
-        <q-btn class="fixed shadow-8" size="md" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="saveHazard"/>
+          <q-btn class="fixed shadow-8" size="md" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="saveHazard"/>
         </div>
       </div>
     </q-modal>
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   data () {
     return {
@@ -70,15 +71,17 @@ export default {
       group: 'opt1',
       index: '',
       hazard: {},
-      loading: false
+      hazards: [],
+      loading: false,
+      siteHazards: []
     }
   },
+  created () {
+    this.hazards = _.cloneDeep(this.allHazards)
+  },
   computed: {
-    hazards () {
+    allHazards () {
       return this.$store.getters.allHazards
-    },
-    selectedHazards () {
-      return this.$store.getters.siteHazards
     },
     taskAnalysisRequired () {
       return this.$store.getters.taskRequired
@@ -136,7 +139,7 @@ export default {
         this.$store.commit('setTaskRequired', true)
       }
       // add hazard to array ready to be written to database
-      this.selectedHazards.push(this.hazard)
+      this.siteHazards.push(this.hazard)
       // remove hazard from hazard list and return new hazards list
       this.hazards.splice(this.index, 1)
       this.openModal = false
@@ -144,9 +147,8 @@ export default {
     saveSiteHazards () {
       // save hazard register to store
       this.loading = true
-      if (this.selectedHazards.length !== 0) {
-        this.$store.commit('setSiteHazards', this.selectedHazards)
-        this.$store.commit('setAllHazards', this.hazards)
+      if (this.siteHazards.length !== 0) {
+        this.$store.commit('setSiteHazards', this.siteHazards)
         if (this.taskAnalysisRequired === true) {
           this.$router.push('/home/taskAnalysis')
         } else {

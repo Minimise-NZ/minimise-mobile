@@ -1,6 +1,6 @@
 <template>
   <div id="q-app">
-    <!--<disconnected v-show="!online"></disconnected>-->
+    <disconnected v-show="!online"></disconnected>
     <router-view/>
   </div>
 </template>
@@ -17,7 +17,6 @@ export default {
     }
   },
   computed: {
-    /*
     online () {
       var networkState = navigator.connection.type
       var states = {}
@@ -36,7 +35,6 @@ export default {
         return true
       }
     }
-    */
   },
   created () {
     console.log(navigator)

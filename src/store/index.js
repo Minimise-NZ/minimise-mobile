@@ -28,7 +28,8 @@ const store = new Vuex.Store({
     taskRequired: false,
     task: {},
     tasks: [],
-    allHazards: []
+    allHazards: [],
+    siteHazards: []
   },
   mutations: {
     clearStore (state) {
@@ -46,6 +47,7 @@ const store = new Vuex.Store({
       state.task = {}
       state.tasks = []
       state.allHazards = []
+      state.siteHazards = []
     },
     setHeader (state, payload) {
       state.header = payload
@@ -63,6 +65,7 @@ const store = new Vuex.Store({
       state.user = payload
     },
     setSafetyPlan (state, payload) {
+      console.log('setting safety plan', payload)
       state.safetyPlan = payload
     },
     setCompanyKey (state, payload) {
@@ -79,6 +82,9 @@ const store = new Vuex.Store({
     },
     setAllHazards (state, payload) {
       state.allHazards = payload
+    },
+    setSiteHazards (state, payload) {
+      state.siteHazards = payload
     },
     setTaskRequired (state, payload) {
       state.taskRequired = payload
@@ -241,8 +247,9 @@ const store = new Vuex.Store({
     signOut ({commit, state}) {
       let plan = state.safetyPlan
       plan.signedIn = false
+      console.log(plan)
       commit('setSafetyPlan', plan)
-      firestore.collection('safetyPlans').doc(plan.id).set(state.safetyPlan)
+      firestore.collection('safetyPlans').doc(plan.id).set(plan)
       commit('setSignedIn', false)
       router.replace('/')
     },
@@ -290,16 +297,21 @@ const store = new Vuex.Store({
       let promise = new Promise((resolve, reject) => {
         let jobId = payload
         console.log('getting safety plan for job', jobId)
-        firestore.collection('safetyPlans').where('jobId', '==', state.jobSite.id).where('workerKey', '==', state.userKey )
+        firestore.collection('safetyPlans')
+          .where('jobId', '==', jobId).where('workerKey', '==', state.userKey )
           .get()
-          .then((doc) => {
-            if (doc.exists) {
-              let plan = doc.data()
-              plan.id = doc.id
-              commit('setSafetyPlan', plan)
-              resolve(plan)
+          .then((snapshot) => {
+            console.log(snapshot)
+            if (snapshot.empty) {
+              commit('setSafetyPlan', {})
+              resolve (null)
             } else {
-              resolve(null)
+              snapshot.forEach((doc) => {
+                let plan = doc.data()
+                plan.id = doc.id
+                commit('setSafetyPlan', plan)
+                resolve(plan)
+              })
             }
           })
           .catch((error) => {
@@ -386,10 +398,11 @@ const store = new Vuex.Store({
           plan.workerKey = state.userKey
           plan.workerName = state.user.name
           console.log(plan)
-          firestore.collection('safetyPlans').doc().set(plan, {merge: true})
+          firestore.collection('safetyPlans').add(plan)
           .then((doc) => {
-            commit('setSignedIn', true)
+            plan.id = doc.id
             commit('setSafetyPlan', plan)
+            commit('setSignedIn', true)
             dispatch('autoSignOut')
             resolve('Safety Plan added to firestore')
           })
@@ -398,22 +411,17 @@ const store = new Vuex.Store({
           })
         } else if (today > plan.expiryDate) {
           console.log('Plan expired')
-          plan.companyKey = state.companyKey
           plan.createdDate = today
           plan.expiryDate = expiryDate
           plan.hazardRegister = state.siteHazards
-          plan.jobId = state.jobSite.id
-          plan.jobAddress = state.jobSite.address
           plan.signedIn = true
           plan.taskAnalysis = state.task
           plan.trainingRegister = state.user.training
-          plan.workerKey = state.userKey
-          plan.workerName = state.user.name
           console.log(plan)
           firestore.collection('safetyPlans').doc(plan.id).set(plan, {merge: true})
-          .then((doc) => {
-            commit('setSignedIn', true)
+          .then(() => {
             commit('setSafetyPlan', plan)
+            commit('setSignedIn', true)
             dispatch('autoSignOut')
             resolve('Safety Plan added to firestore')
           })

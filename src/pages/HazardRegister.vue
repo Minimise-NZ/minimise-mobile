@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <q-scroll-area style="width: 100%; height: 80vh;">
-        <q-collapsible v-for="(hazard, index) in hazards" :key="index" :label="hazard.name" group="hazards" opened highlight>
+        <q-collapsible v-for="(hazard, index) in hazards" :key="index" :label="hazard.name" group="hazards" highlight>
           <q-card>
             <q-card-main>
               <q-item v-for="(control, index) in hazard.controls" :key="index">
