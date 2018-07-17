@@ -24,12 +24,11 @@
     <q-btn class="fixed shadow-8" size="lg" style="right: 18px; bottom: 18px" round color="positive" icon="done_all" @click="saveSiteHazards" replace/>
     <q-modal v-model="openModal">
       <q-toolbar color="deep-orange-7" class="shadow-2">
-        <q-toolbar-title style="padding-left: 25px">{{hazard.name}}</q-toolbar-title>
+        <q-toolbar-title style="padding-left: 25px">Please check your controls</q-toolbar-title>
       </q-toolbar>
       <div class="container">
         <q-list highlight>
-          <q-list-header class="bg-deep-orange-5 text-white">Please check your controls are in place</q-list-header>
-          <q-scroll-area style="width: 100%; height: 65vh;">
+          <q-scroll-area style="width: 100%; height: 80vh">
             <q-item v-for="(control, index) of hazard.controls" :key="index">
               <q-item-main>
                 <q-item-tile style="padding-bottom: 15px">{{control.desc}}</q-item-tile>

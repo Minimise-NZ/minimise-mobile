@@ -57,6 +57,7 @@ export default {
                 this.$store.dispatch('getTasks')
               })
               .then(() => {
+                this.loading = false
                 this.$router.replace('/location')
               })
             })

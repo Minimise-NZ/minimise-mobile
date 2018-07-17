@@ -1,22 +1,23 @@
 <template>
   <div id="q-app">
-    <disconnected v-show="!online"></disconnected>
+    <!--<disconnected v-show="!online"></disconnected>-->
     <router-view/>
   </div>
 </template>
 
 <script>
-import Disconnected from './components/disconnected'
+// import Disconnected from './components/disconnected'
 export default {
   name: 'App',
   components: {
-    'disconnected': Disconnected
+    // 'disconnected': Disconnected
   },
   data () {
     return {
     }
   },
   computed: {
+    /*
     online () {
       var networkState = navigator.connection.type
       var states = {}
@@ -35,6 +36,7 @@ export default {
         return true
       }
     }
+    */
   },
   created () {
     console.log(navigator)
