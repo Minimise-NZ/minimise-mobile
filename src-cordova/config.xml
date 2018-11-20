@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.minimisesafetyapp" version="1.20">
+    <name>Minimise</name>
+    <description>Simple site safety</description>
+    <author email="minimise.online@gmail.com" href="https://minimisesafetyapp.com/">
+        The Minimise team
+    </author>
+    <icon density="mdpi" height="57" platform="android" src="res/icon/icon.png" width="57" />
+    <content src="index.html" />
+    <plugin name="cordova-plugin-whitelist" spec="1" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+    </platform>
+    <platform name="ios">
+        <allow-intent href="itms:*" />
+        <allow-intent href="itms-apps:*" />
+    </platform>
+    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
+    <engine name="android" spec="^7.0.0" />
+</widget>
