@@ -35,7 +35,7 @@ export default [
     children: [
       {
         path: '/',
-        component: () => import('pages/SafetyPlan')
+        component: () => import('pages/Home')
       },
       {
         path: 'emergency',
