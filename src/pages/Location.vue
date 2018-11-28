@@ -47,18 +47,21 @@ export default {
       this.loading = true
       let inductions = job.inducted
       let inducted = false
-      for (var i = 0; i < inductions.length; i ++) {
-        console.log(inductions[i])
-        if (inductions[i].workerId === this.userKey) {
-          console.log('INDUCTED')
-          inducted = true
+      try {
+        if (inductions.includes(this.userKey)) {
+        console.log('INDUCTED')
+        this.$router.push('/home')
+        this.loading = false
+        } else {
+          console.log('NOT INDUCTED')
+          this.$router.push('/hazards')
           this.loading = false
-          this.$router.push('/home')
         }
       }
-      console.log('NOT INDUCTED')
-      this.$router.push('/hazards')
-      this.loading = false
+      catch (error) {
+        console.log(error)
+        this.loading = false
+      }
     }
   }
 }

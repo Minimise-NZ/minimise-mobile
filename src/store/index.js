@@ -276,6 +276,7 @@ const store = new Vuex.Store({
                 supervisorName: job.supervisorName,
                 supervisorPhone: job.supervisorPhone,
                 inducted: job.inducted,
+                inductionRegister: job.inductionRegister,
                 task: job.task
               })
             })
@@ -292,16 +293,17 @@ const store = new Vuex.Store({
     inductionComplete ({commit, state}) {
       let promise = new Promise ((resolve, reject) => {
         let job = state.selectedJob
-        jobSitesRef.doc(job.id).set({inducted: {
-          companyName: state.user.companyName,
-          workerId: state.userKey,
-          workerName: state.user.name
-        }}, {merge: true})
-        resolve()
-      })
-      .catch((error) => {
-        reject(error)
-      })
+        jobSitesRef.doc(job.id).update({
+          inductionRegister: firebase.firestore.FieldValue.arrayUnion({companyName: state.user.companyName, workerName: state.user.name}),
+          inducted: firebase.firestore.FieldValue.arrayUnion(state.userKey)
+        },{merge: true})
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+      }) 
       return promise
     },
     jobSignOn ({state, dispatch, commit}, payload) {

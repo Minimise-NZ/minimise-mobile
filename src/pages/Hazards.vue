@@ -90,23 +90,14 @@ export default {
   computed: {
     hazards () {
       return this.$store.getters.myHazards
-    },
-    taskAnalysis() {
-      return this.$store.getters.taskAnalysisRequired
     }
   },
   methods: {
     route () {
-      if (this.taskAnalysis === null) {
-        this.$store.dispatch('inductionComplete')
-        .then(() => {
-          this.$router.push('/home')
-          console.log('NO TASK REQUIRED')
-        })
-      } else {
-        this.$router.push('/home/taskAnalysis')
-        console.log('TASK REQUIRED', this.taskAnalysis)
-      }
+      this.$store.dispatch('inductionComplete')
+      .then(() => {
+        this.$router.push('/home')
+      })
     }
   }
 }
@@ -121,6 +112,9 @@ export default {
     padding: 10px;
   }
 
+  p {
+    margin: 0 0 10px;
+  }
   .title {
     margin-top: 10px;
     padding-right: 10px;
