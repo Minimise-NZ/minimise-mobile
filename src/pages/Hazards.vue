@@ -40,7 +40,6 @@
               <p class="text-faded" >Control level: <span>{{hazard.controlLevel}}</span></p>
             </q-card-main>
             </q-card>
-           
           </q-card>
         </q-carousel-slide>
         <q-carousel-control slot="control-nav" slot-scope="carousel" :offset="[18, 250]">

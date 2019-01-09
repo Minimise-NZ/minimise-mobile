@@ -68,13 +68,133 @@
 <script>
 export default {
   data () {
+    return {
+      loading: false,
+      showModal: false,
+      incident: {
+        address: '',
+        cause: '',
+        company: '',
+        corrective: '',
+        description: '',
+        escalate: false,
+        injuryDescription: '',
+        open: true,
+        plantDamage: '',
+        type: ''
+      },
+      jobSite: {},
+      header: { title: 'Report an Incident', color: 'cyan-9' },
+      incidentTypes: [
+        { label: 'Near Miss', value: 'Near Miss' },
+        { label: 'Minor Harm', value: 'Minor Harm' },
+        { label: 'Serious Harm', value: 'Serious Harm' },
+        { label: 'Plant Damage', value: 'Plant Damage' }
+      ]
+    }
   },
   computed: {
+    user () {
+      return this.$store.getters.user
+    },
+    userKey () {
+      return this.$store.getters.userKey
+    },
+    injury () {
+      if (this.incident.type === 'Minor Harm' || this.incident.type === 'Serious Harm') {
+        return true
+      } else {
+        return false
+      }
+    },
+    plant () {
+      if (this.incident.type === 'Plant Damage') {
+        return true
+      } else {
+        return false
+      }
+    }
   },
   methods: {
+    submit () {
+      // check that all fields are complete
+      this.loading = true
+      if (this.incident.type === '' || this.incident.description === '' || this.incident.corrective === '') {
+        this.loading = false
+        this.$q.notify({
+          message: 'Please complete all fields',
+          position: 'bottom',
+          timeout: 1000
+        })
+      } else if ((this.incident.type === 'Minor Harm' || this.incident.type === 'Serious Harm') && (this.incident.injuryDescription === '')) {
+        this.loading = false
+        this.$q.notify({
+          message: 'Please provide details of injury',
+          position: 'bottom',
+          timeout: 1000
+        })
+      } else if (this.incident.type === 'Plant Damage' && this.incident.plantDamage === '') {
+        this.loading = false
+        this.$q.notify({
+          message: 'Please provide details of plant damage',
+          position: 'bottom',
+          timeout: 1000
+        })
+      } else {
+        // save to firestore
+        let incident = this.incident
+        incident.actionOwner = {key: this.jobSite.supervisorKey, name: this.jobSite.supervisorName}
+        incident.address = this.jobSite.address
+        incident.company = this.jobSite.companyKey
+        incident.injury = this.injury
+        incident.loggedBy = {key: this.userKey, name: this.user.name}
+        incident.reportedBy = this.user.name
+        this.$store.dispatch('newIncident', incident)
+          .then((response) => {
+            this.loading = false
+            console.log(response)
+            this.showModal = true
+          })
+          .catch((error) => {
+            this.loading = false
+            console.log(error)
+          })
+      }
+    }
+  },
+  beforeMount () {
+    this.jobSite = this.$store.getters.selectedJob
+    console.log(this.jobSite)
+    this.$store.dispatch('updateHeader', this.header)
   }
 }
 </script>
 
 <style scoped>
+  .container {
+    padding: 5px;
+  }
+  .q-scroll-area {
+    margin-top: 10px;
+  }
+  .row {
+    margin-top: 10px;
+    padding-left: 5px;
+  }
+ .footer {
+    position: absolute;
+    bottom: 0;
+  }
+  .q-select, .q-input{
+    width: 100%;
+  }
+  .submit {
+    width: 50%;
+    margin: auto;
+  }
+  @media screen and (max-height: 300px) {
+    .keyboard-hide {
+      display: none;
+    }
+  }
 </style>

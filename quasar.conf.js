@@ -80,7 +80,8 @@ module.exports = function (ctx) {
         'QCheckbox',
         'QItemSeparator',
         'QInnerLoading',
-        'QSpinnerGears'
+        'QSpinnerGears',
+        'QPullToRefresh'
       ],
       directives: [
         'Ripple',

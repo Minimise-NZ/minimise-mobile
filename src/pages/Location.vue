@@ -19,6 +19,7 @@
         </q-scroll-area>
       </q-list>
     </div>
+    <q-btn class="fixed shadow-8" style="right: 18px; bottom: 18px" block color="positive" rounded icon="refresh" @click="refresh" label="Refresh"/>
     <q-inner-loading :visible="loading">
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
@@ -41,6 +42,9 @@ export default {
     }
   },
   methods: {
+    refresh () {
+      this.$store.dispatch('getJobs')      
+    },
     async setLocation(job) {
       console.log('setting Location', job)
       this.$store.dispatch('storeSelectedJob', job)

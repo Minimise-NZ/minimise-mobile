@@ -5,8 +5,8 @@
         <div class="section">
           <q-list-header class="bg-cyan-9 text-white">Site Contacts</q-list-header>
           <div class="content">
-            <p>Site Manager: {{jobSite.supervisorName}}</p>
-            <p><q-icon name="phone"/><span>{{jobSite.supervisorPhone}}</span></p>
+            <p>Site Manager: {{job.supervisorName}}</p>
+            <p><q-icon name="phone"/><span>{{job.supervisorPhone}}</span></p>
           </div>
         </div>
         <div class="section">
@@ -42,24 +42,20 @@
 export default {
   data () {
     return {
-      jobSite: {
-        header: { title: 'Emergency Information', color: 'light-blue-9' },
-        supervisorName: 'supervisorName',
-        supervisorPhone: 'supervisorPhone',
-        medical: '187 Marine Parade'
-
-      }
+      header: { title: 'Emergency Information', color: 'light-blue-9' }
     }
   },
   computed: {
     medicalMap () {
-      return 'https://www.google.com/maps/embed/v1/place?key=AIzaSyD7W7NiKKy0qZfRUsslzHOe-Hnkp-IncyU&q=' + this.jobSite.medical
+      return 'https://www.google.com/maps/embed/v1/place?key=AIzaSyD7W7NiKKy0qZfRUsslzHOe-Hnkp-IncyU&q=' + this.job.medical
+    },
+    job () {
+      return this.$store.getters.selectedJob
     }
   },
   methods: {
   },
   beforeMount () {
-    this.jobSite = this.$store.getters.jobSite
     this.$store.dispatch('updateHeader', this.header)
   }
 }
@@ -69,11 +65,21 @@ export default {
   .q-scroll-area {
     margin-top: 5px;
   }
+
+  .q-list-header {
+    min-height: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
   .container {
     padding-top: 5px;
   }
   .content {
     margin: 10px;
+  }
+
+  p {
+    font-size: 14px;
   }
   i {
     margin-right: 10px;

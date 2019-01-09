@@ -101,6 +101,7 @@ export default {
   name: 'LayoutDefault',
   data () {
     return {
+      jobSite: {},
       readonly: true,
       changed: false,
       leftDrawerOpen: false,
@@ -117,14 +118,18 @@ export default {
       return this.$store.getters.user
     },
     address () {
-      return this.$store.getters.jobSite.address
+      return this.$store.getters.selectedJob.address
     },
     signedIn () {
-      return this.$store.getters.signedIn
+      if (_.isEmpty(this.$store.getters.currentJob)) {
+        return false // this.$store.getters.signedIn
+      } else {
+        return true
+      }
     }
   },
   beforeMount () {
-    this.jobSite = this.$store.getters.jobSite
+    this.jobSite = this.$store.getters.selectedJob
   },
   mounted () {
     var copy = Object.assign({}, this.user)

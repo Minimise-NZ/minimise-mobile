@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   data () {
     return {
@@ -68,7 +69,11 @@ export default {
   },
   computed: {
     signedIn () {
-      return false // this.$store.getters.signedIn
+      if (_.isEmpty(this.$store.getters.currentJob)) {
+        return false // this.$store.getters.signedIn
+      } else {
+        return true
+      }
     }
   },
   methods: {
@@ -80,7 +85,7 @@ export default {
     }
   },
   beforeMount () {
-    // this.jobSite = this.$store.getters.jobSite
+    this.jobSite = this.$store.getters.selectedJob
     this.$store.dispatch('updateHeader', this.header)
   },
 }

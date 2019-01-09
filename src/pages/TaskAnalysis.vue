@@ -1,99 +1,58 @@
 <template>
   <div class="outer">
-    <div class="container" >
-      <q-list-header class="bg-blue-9 text-white" style="margin-bottom: 0">{{task.title}}</q-list-header>
-      <q-scroll-area style="width: 100%; height: 72vh">
-        <div class="row justify-between">
-          <div class="col-10">
-            <q-input :value="task.ppe" stack-label="PPE required" readonly/>
-          </div>
-        </div>
-        <div class="row justify-between">
-          <div class="col-10">
-            <q-input :value="task.plant" stack-label="Plant required" readonly/>
-          </div>
-        </div>
-        <div class="row justify-between">
-          <div class="col-10">
-            <q-input stack-label="Signage required" :value="task.signage" readonly/>
-          </div>
-        </div>
-
-        <q-carousel height="80vh">
-        <q-carousel-slide v-for="(step, index) of task.steps" :key="index">
-          <q-item-main>
-           <q-list-header class="bg-secondary text-white">Step {{index+1}} - {{step.description}}</q-list-header>
-            <div class="content">
+    <div class="container" v-if="taskRequired !== null">
+        <q-carousel arrows color="white" height="80vh">
+          <q-carousel-slide>
+            <q-list-header class="bg-blue-9 text-white" style="margin-bottom: 0">Task Requirements</q-list-header>
+            <q-card style="height: 70vh">
+              <q-card-main>
+                <q-input class="q-mt-sm" :value="taskRequired.ppe" stack-label="PPE required" type="textarea" readonly/>
+                <q-input class="q-mt-sm" :value="taskRequired.plant" stack-label="Plant required" type="textarea" readonly/>
+                <q-input class="q-mt-sm"  stack-label="Signage required" :value="taskRequired.signage" type="textarea" readonly/>
+              </q-card-main>
+            </q-card>
+          </q-carousel-slide>
+          <q-carousel-slide v-for="(step, index) of taskRequired.steps" :key="index">
+            <q-list-header class="bg-blue-9 text-white" style="margin-bottom: 0">Step {{index+1}} - {{step.description}}</q-list-header>
+            <q-card>
               <q-card v-for="(hazard, index) in step.hazards" :key="index">
-                <p><strong>{{hazard.name}}</strong></p>
-              <q-card-main>
-                <p class="subtitle">Risks</p>
-                <p class="text-faded" v-for="(risk, index) in hazard.risks" :key="index">{{risk}}</p>
-              </q-card-main>
-              <q-card-separator />
-              <q-card-main>
-                <p class="subtitle">Controls</p>
-                <p class="text-faded" v-for="(control, index) in hazard.controls" :key="index">{{control}}</p>
-              </q-card-main>
-              <q-card-separator />
-              <q-card-main>
-                <p class="text-faded" >Risk before controls: <span :class="hazard.IRA" >{{hazard.IRA}}</span></p>
-                <p class="text-faded" >Risk after controls: <span :class="hazard.RRA">{{hazard.RRA}}</span></p>
-                <p class="text-faded" >Control level: <span>{{hazard.controlLevel}}</span></p>
-              </q-card-main>
-              </q-card >
-              
-            </div>
-          </q-item-main>
-        </q-carousel-slide>
+                <q-card-title>
+                  <div class="title">{{hazard.name}}</div>
+                </q-card-title>
+                <q-card-main>
+                  <div class="row">
+                    <div class="col">
+                      <p class="subtitle">Risks</p>
+                      <p class="text-faded" v-for="(risk, index) in hazard.risks" :key="index">{{risk}}</p>
+                    </div>
+                    <div class="col">
+                      <p class="subtitle">Controls</p>
+                      <p class="text-faded" v-for="(control, index) in hazard.controls" :key="index">{{control}}</p>
+                    </div>
+                  </div>
+                  <p class="text-faded" >Risk before controls: <span :class="hazard.IRA" >{{hazard.IRA}}</span></p>
+                  <p class="text-faded" >Risk after controls: <span :class="hazard.RRA">{{hazard.RRA}}</span></p>
+                  <p class="text-faded" >Control level: <span>{{hazard.controlLevel}}</span></p>
+                </q-card-main>
+              </q-card>
+            </q-card >
+          </q-carousel-slide>
+          <q-carousel-control slot="control-nav" slot-scope="carousel" :offset="[18, 0]">
+            <q-btn
+              label="Sign on"
+              @click="saveTask"
+              v-if="!carousel.canGoToNext"
+              color="positive" text-color="white"
+              icon="check"  
+              size="md"/>
+          </q-carousel-control>
         </q-carousel>
        
-      </q-scroll-area>
+
     </div>
-    <q-modal v-model="openModal">
-      <q-toolbar class="shadow-2 bg-blue-grey-8">
-        <q-toolbar-title style="padding-left: 15px">{{task.title}}</q-toolbar-title>
-      </q-toolbar>
-      <div class="container">
-        <q-list-header class="bg-blue-8 text-white">Please review task steps</q-list-header>
-          <q-scroll-area style="width: 100%; height: 65vh">
-            <div class="row justify-between" v-if="task.ppeRequired === 'true'">
-              <div class="col-10">
-                <q-input :value="task.ppe" stack-label="PPE required" readonly/>
-              </div>
-              <q-checkbox v-model="ppeChecked" style="margin-right: 10px"/>
-            </div>
-            <div class="row justify-between" v-if="task.plantRequired === 'true'">
-              <div class="col-10">
-                <q-input :value="task.plant" stack-label="Plant required" readonly/>
-              </div>
-              <q-checkbox v-model="plantChecked" style="margin-right: 10px"/>
-            </div>
-            <div class="row justify-between" v-if="task.signage === 'true'">
-              <div class="col-10">
-                 <q-input stack-label="Signage required" value="Signage in place" readonly/>
-              </div>
-              <q-checkbox v-model="signageChecked" style="margin-right: 10px"/>
-            </div>
-            <q-item v-for="(step, index) of task.steps" :key="index">
-              <q-item-main>
-                <q-list-header class="bg-secondary text-white">Step {{index+1}}</q-list-header>
-                <div class="content">
-                  <p><strong>Description of step</strong></p>
-                  <q-item-tile style="padding-bottom: 15px">{{step.description}}</q-item-tile>
-                  <p><strong>Hazards</strong></p>
-                  <q-item-tile style="padding-bottom: 15px">{{step.hazards}}</q-item-tile>
-                  <p><strong>Controls</strong></p>
-                  <q-item-tile style="padding-bottom: 15px">{{step.controls}}</q-item-tile>
-                </div>
-              </q-item-main>
-            </q-item>
-            <q-checkbox v-model="signedOn" left-label label="I have reviewed this task analysis and have been appropriately trained in the process" style="margin: 10px 10px 20px 10px"/>
-          </q-scroll-area>
-        <q-btn class="fixed shadow-8" size="md" style="left: 18px; bottom: 18px" round color="negative" icon="clear" @click="cancel"/>
-        <q-btn class="fixed shadow-8" size="md" style="right: 18px; bottom: 18px" round color="positive" icon="done" @click="saveTask"/>
-      </div>
-    </q-modal>
+     <q-toolbar color='blue-grey-8' class="footer shadow-2">
+      <q-btn flat icon="arrow_back" @click="$router.push('/home')" replace/>
+    </q-toolbar>
     <q-inner-loading :visible="loading">
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
@@ -105,65 +64,24 @@ import _ from 'lodash'
 export default {
   data () {
     return {
-      header: { title: 'Task Analysis', color: 'blue-grey-8' },
-      openModal: false,
+      header: { title: this.taskRequired.title, color: 'blue-grey-8' },
       index: '',
       signedOn: false,
-      ppeChecked: false,
-      plantChecked: false,
-      signageChecked: false,
       loading: false
     }
   },
   computed: {
-    task () {
-      return this.$store.getters.taskAnalysis
-    }
   },
   beforeCreate () {
-    this.$store.dispatch('getTaskAnalysis')
+    this.taskRequired = this.$store.getters.taskAnalysisRequired
   },
   beforeMount () {
     this.$store.dispatch('updateHeader', this.header)
   },
   methods: {
     saveTask () {
-      // check that all requirements are met
-      if (this.task.ppeRequired === 'true' && this.ppeChecked === false) {
-        this.$q.notify({
-          message: 'Please confirm that you have the PPE required',
-          position: 'bottom',
-          timeout: 1000
-        })
-        return
-      }
-      if (this.task.plantRequired === 'true' && this.plantChecked === false) {
-        this.$q.notify({
-          message: 'Please confirm that you have the plant required',
-          position: 'bottom',
-          timeout: 1000
-        })
-        return
-      }
-      if (this.task.signage === 'true' && this.signageChecked === false) {
-        this.$q.notify({
-          message: 'Please confirm that you have the signage required',
-          position: 'bottom',
-          timeout: 1000
-        })
-        return
-      }
-      if (this.signedOn === false) {
-        this.$q.notify({
-          message: 'Please confirm that you have reviewed this task analysis',
-          position: 'bottom',
-          timeout: 1000
-        })
-        return
-      }
       this.loading = true
-      this.$store.commit('setTaskRequired', false)
-      this.$store.commit('setTask', this.task)
+      // sign on to task analysis if not already signed on
       this.loading = false
       this.$router.replace('/home')
     },
@@ -187,39 +105,48 @@ export default {
     padding-bottom: 0;
     margin-bottom: 0;
   }
-  .col-10, .col-1 {
+
+  p {
+    margin: 0 0 10px;
+  }
+
+  .q-carousel-slide {
     padding: 10px;
   }
-  .q-item-label {
-    font-size: 1.2rem;
+
+  .q-card-main {
+    padding: 10px;
   }
-  .q-item {
-    border-bottom: 0.5px solid lightgrey;
-    padding-left: 5px;
-    padding-right: 5px;
+
+  .q-card-primary {
+    padding: 10px;
   }
-  .q-option {
-    margin-top: 15px;
+
+  .title {
+    font-size: 16px;
+    font-weight: 600;
   }
-  .content {
-    padding-left: 5px;
-    padding-right: 5px;
+
+  textarea {
+    padding-top: 10px !important;
   }
-  .q-item-main {
-    padding: 10px 0 0 0;
+
+  span {
+    font-weight: bold;
   }
-  .q-list-header {
-    margin-bottom: 10px;
+  .Low {
+    color: rgb(76, 175, 80);
   }
-  h5 {
-    font-size: 14px;
-    font-weight: 500;
-    color: #757575;
-    line-height: 48px;
+  .Moderate {
+    color: rgba(255, 87, 34, 0.75);
   }
-  p {
-    margin-bottom: 5px;
+  .High {
+    color: rgb(244, 67, 54);
   }
+  .Critical {
+    color:rgba(233, 30, 99, 0.75);
+  }
+
   .footer {
     position: absolute;
     bottom: 0;

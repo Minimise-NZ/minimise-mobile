@@ -47,15 +47,17 @@ export default {
             .then(() => {
               this.$store.dispatch('getUser')
               .then(() => {
-                this.$store.dispatch('getCompany')
-                this.$store.dispatch('getJobs')
-                this.$store.dispatch('getHazards')
-                this.$store.dispatch('getHazSubs')
-                this.$store.dispatch('getTaskAnalysis')
-              })
-              .then(() => {
-                this.loading = false
-                this.$router.replace('/location')
+                var getCompany = this.$store.dispatch('getCompany')
+                var getJobs = this.$store.dispatch('getJobs')
+                var getHazards = this.$store.dispatch('getHazards')
+                var getHazSubs = this.$store.dispatch('getHazSubs')
+                var getTaskAnalysis = this.$store.dispatch('getTaskAnalysis')
+                Promise.all([getCompany, getJobs, getHazards, getHazSubs, getTaskAnalysis])
+                  .then(() => {
+                    console.log('all promises complete')
+                  this.loading = false
+                  this.$router.replace('/location')
+                })
               })
             })
             .catch((error) => {

@@ -35,8 +35,20 @@ const store = new Vuex.Store({
     taskAnalysis: []
   },
   mutations: {
-    clearStore () {
-      store.replaceState({})
+    clearStore (state) {
+      state.header = {},
+      state.userKey = '',
+      state.user = {},
+      state.uid = '',
+      state.safetyPlan = {},
+      state.company = {},
+      state.companyKey = '',
+      state.jobs = [],
+      state.selectedJob = {},
+      state.currentJob = {},
+      state.myHazards = [],
+      state.hazardousSubstances = [],
+      state.taskAnalysis = []
     },
     setHeader (state, payload) {
       state.header = payload
@@ -66,7 +78,7 @@ const store = new Vuex.Store({
     },
     setJobs (state, payload) {
       state.jobs = payload
-      console.log('Jobs set')
+      console.log('Jobs set', state.jobs)
     },
     setCurrentJob (state, payload) {
       console.log('setting current job', payload)
@@ -148,9 +160,9 @@ const store = new Vuex.Store({
     logIn ({}, payload) {
       let promise = new Promise((resolve, reject) => {
         firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-          .then(
+          .then(() => {
             resolve()
-          )
+          })
           .catch(
             error => {
               reject(error)
@@ -213,6 +225,7 @@ const store = new Vuex.Store({
       return promise
     },
     getCompany ({commit, state}) {
+      console.log('getting company')
       let promise = new Promise((resolve, reject) => {
         companiesRef.doc(state.companyKey)
           .get()
@@ -248,6 +261,7 @@ const store = new Vuex.Store({
       return promise
     },
     getJobs ({commit, state}) {
+      console.log('getting jobs')
       // get all jobs in progress that this worker is assigned to
       let promise = new Promise((resolve, reject) => {
         jobSitesRef.where('companyKey', '==', state.companyKey).where('open', '==', true)
@@ -277,7 +291,8 @@ const store = new Vuex.Store({
                 supervisorPhone: job.supervisorPhone,
                 inducted: job.inducted,
                 inductionRegister: job.inductionRegister,
-                task: job.task
+                tasks: job.tasks,
+                taskSignedOn: job.taskSignedOn
               })
             })
             commit('setJobs', jobs)
@@ -295,8 +310,10 @@ const store = new Vuex.Store({
         let job = state.selectedJob
         jobSitesRef.doc(job.id).update({
           inductionRegister: firebase.firestore.FieldValue.arrayUnion({companyName: state.user.companyName, workerName: state.user.name}),
+        })
+        jobSitesRef.doc(job.id).update({
           inducted: firebase.firestore.FieldValue.arrayUnion(state.userKey)
-        },{merge: true})
+        })
         .then(() => {
           resolve()
         })
@@ -386,17 +403,11 @@ const store = new Vuex.Store({
       })
       return promise
     },
-    newIncident ({commit, dispatch, state}, payload) {
+    newIncident ({}, payload) {
       // create new incident in firestore
       let promise = new Promise((resolve, reject) => {
         incidentsRef.add(payload)
         .then(() => {
-          // if admin getAllIncidents, else getMyIncidents
-          if (state.user.admin === true) {
-            dispatch('getAllIncidents')
-          } else {
-            dispatch('getMyIncidents')
-          }
           resolve()
         })
         .catch((error) => {
@@ -486,6 +497,7 @@ const store = new Vuex.Store({
     companyKey: (state) => state.companyKey,
     company: (state) => state.company,
     jobs: (state) => state.jobs,
+    selectedJob: (state) => state.selectedJob,
     currentJob: (state) => state.currentJob,
     myHazards: (state) => state.myHazards,
     hazardousSubstances: (state) => state.hazardousSubstances,
@@ -497,8 +509,7 @@ const store = new Vuex.Store({
       }
     },
     header: (state) => state.header,
-    taskAnalysisRequired: (state) => state.selectedJob.task,
-    taskAnalysis: (state) => state.taskAnalysis[state.selectedJob.task]
+    taskAnalysis: (state) => state.taskAnalysis
   },
   plugins: [createPersistedState()]
 })
