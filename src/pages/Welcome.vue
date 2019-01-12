@@ -20,7 +20,7 @@
     </div>
     <div class="buttons" v-if="currentJob !== null">
       <p style="margin-bottom: 5px">You are signed in to</p>
-      <p style="margin-bottom: 25px"><strong>jobSite.address</strong></p>
+      <p style="margin-bottom: 25px"><strong>{{currentJob.address}}</strong></p>
       <router-link to='/home'>
         <q-btn color="primary" rounded big>View Safety Plan</q-btn>
       </router-link>
@@ -59,8 +59,9 @@ export default {
   methods: {
     getCurrentJob () {
       let job = this.$store.getters.currentJob
+      console.log(job)
       if (_.isEmpty(job) === false) {
-        this.currentJob = job
+        this.currentJob = this.$store.getters.jobSite(job.register.jobId)
       }
     },
     signOut () {

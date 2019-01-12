@@ -67,10 +67,10 @@ export default {
       loading: false  
     }
   },
-  computed: {
+  computed: { 
     signedIn () {
       if (_.isEmpty(this.$store.getters.currentJob)) {
-        return false // this.$store.getters.signedIn
+        return false
       } else {
         return true
       }
@@ -78,10 +78,17 @@ export default {
   },
   methods: {
     signIn () {
+      this.loading = true
       console.log('signing In')
+      this.$store.dispatch('jobSignOn', this.jobSite.id)
+      this.loading = false
     },
     signOut () {
       console.log('signing out')
+      this.loading = true
+      this.$store.dispatch('signOutCurrentJob')
+      this.loading = false
+      this.$router.replace('/location')
     }
   },
   beforeMount () {

@@ -81,7 +81,7 @@ const store = new Vuex.Store({
       console.log('Jobs set', state.jobs)
     },
     setCurrentJob (state, payload) {
-      console.log('setting current job', payload)
+      console.log('setting current job in store', payload)
       state.currentJob = payload
       state.user.currentJob = payload
     },
@@ -309,7 +309,11 @@ const store = new Vuex.Store({
       let promise = new Promise ((resolve, reject) => {
         let job = state.selectedJob
         jobSitesRef.doc(job.id).update({
-          inductionRegister: firebase.firestore.FieldValue.arrayUnion({companyName: state.user.companyName, workerName: state.user.name}),
+          inductionRegister: firebase.firestore.FieldValue.arrayUnion({
+            companyName: state.user.companyName,
+            workerName: state.user.name,
+            date: Date.now()
+          }),
         })
         jobSitesRef.doc(job.id).update({
           inducted: firebase.firestore.FieldValue.arrayUnion(state.userKey)
@@ -323,13 +327,42 @@ const store = new Vuex.Store({
       }) 
       return promise
     },
+    taskSignOn ({state}, payload) {
+      let taskId = payload
+      let promise = new Promise((resolve, reject) => {
+        jobSitesRef.doc(state.selectedJob.id).update({
+          taskSignedOn: firebase.firestore.FieldValue.arrayUnion({
+            taskId: taskId,
+            worker: {
+              name: state.user.name,
+              id: state.userKey,
+              date: Date.now(),
+              company: state.user.companyName
+            }
+          }),
+        })
+        .then(() => {
+          state.selectedJob.taskSignedOn.push({
+            taskId: taskId,
+            worker: {
+              name: state.user.name,
+              id: state.userKey,
+              date: Date.now(),
+              company: state.user.companyName
+            }
+          })
+          resolve()
+        })
+        .catch((error) => {
+          console.log(error)
+          reject()
+        })
+      })
+      return promise
+    },
     jobSignOn ({state, dispatch, commit}, payload) {
       // sign user into job site
       let jobKey = payload
-      if (Vue._.isEmpty(state.currentJob) === false) {
-        console.log('current job is empty')
-        dispatch('signOutCurrentJob')
-      }
       let promise = new Promise((resolve, reject) => {
         console.log('creating signInRegister')
         let docKey = today + state.userKey
@@ -350,7 +383,7 @@ const store = new Vuex.Store({
             jobSitesRef.doc(jobKey).collection('signInRegister').doc(docKey).get()
             .then((doc) => {
               dispatch('setCurrentJob', {registerKey: doc.id, register: doc.data()})
-              commit('setCurrentJob', {registerKey: doc.id, register: doc.data()})
+              commit('setCurrentJob', {registerKey: doc.id, jobKey: jobKey})
               resolve()
             })
           })
@@ -371,7 +404,7 @@ const store = new Vuex.Store({
     },
     setCurrentJob ({state, commit}, payload) {
       let promise = new Promise((resolve, reject) => {
-        console.log('setting current job', payload)
+        console.log('setting current job in firestore', payload)
         usersRef.doc(state.userKey).set({currentJob: payload}, {merge: true})
         .then(() => {
           resolve()
@@ -387,7 +420,7 @@ const store = new Vuex.Store({
       // update Sign in register
       console.log('signing out')
       let promise = new Promise((resolve, reject) => {
-        let jobKey = state.currentJob.register.jobId
+        let jobKey = state.currentJob.jobKey
         let docKey = state.currentJob.registerKey
         var signInRegisterRef = jobSitesRef.doc(jobKey).collection('signInRegister').doc(docKey)
         signInRegisterRef.set({signedOut: Date.now()}, {merge: true})
@@ -503,7 +536,7 @@ const store = new Vuex.Store({
     hazardousSubstances: (state) => state.hazardousSubstances,
     jobSite (state) {
       return (id) => {
-        return state.jobsInProgress.find((job) => {
+        return state.jobs.find((job) => {
           return job.id === id
         })
       }

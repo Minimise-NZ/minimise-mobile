@@ -96,4 +96,12 @@ export default {
     height: 100vh
   }
 
+   .bg-plum {
+    background: #6d3d6d;
+  }
+
+  .bg-light-plum {
+    background: #a36aad;
+  }
+
 </style>

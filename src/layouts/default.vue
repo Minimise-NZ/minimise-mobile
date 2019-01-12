@@ -67,7 +67,7 @@
               <q-item-side icon="remove red eye" />
               <q-item-main label="View Safety Plan"/>
             </q-item>
-            <q-item @click.native="signout">
+            <q-item @click.native="signOut">
               <q-item-side icon="clear" />
               <q-item-main label="Sign out"/>
             </q-item>
@@ -185,8 +185,12 @@ export default {
           console.log(err)
         })
     },
-    signout () {
-      this.$store.dispatch('signOut')
+    signOut () {
+      console.log('signing out')
+      this.loading = true
+      this.$store.dispatch('signOutCurrentJob')
+      this.loading = false
+      this.$router.replace('/location')
     },
     confirmLogout () {
       this.$q.dialog({
