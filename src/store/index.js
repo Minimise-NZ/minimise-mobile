@@ -124,7 +124,7 @@ const store = new Vuex.Store({
         return (error)
       })
     },
-    signUp ({}, payload) {
+    signUp ({state, dispatch}, payload) {
       // create a new user in firebase
       console.log('signing up', payload)
       let promise = new Promise((resolve, reject) => {
@@ -148,7 +148,9 @@ const store = new Vuex.Store({
               .then(() => {
                 console.log('User updated')
                 dispatch('getUser')
-                resolve()
+                .then(() => {
+                  resolve()
+                })
               })
           })
           .catch((error) => {
@@ -215,7 +217,7 @@ const store = new Vuex.Store({
               commit('setCompanyKey', user.companyKey)
               commit('setCurrentJob', user.currentJob)
               console.log('User profile set')
-              resolve()
+              resolve('user resolved')
             })
           })
           .catch((error) => {

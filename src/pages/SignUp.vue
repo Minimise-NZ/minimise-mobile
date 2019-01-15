@@ -1,4 +1,16 @@
 <template>
+<div>
+  <q-dialog
+    v-model="success"
+    title="Thank you"
+    message="You have successfully signed up"
+    @ok="login"
+    >
+    <div slot="body" style="text-align: center">
+      <q-icon name="far fa-smile fa-3x" color="secondary"/>
+    </div>
+  </q-dialog>
+
   <div class="login-container">
     <div class="img-container">
       <img src="../statics/minimise-256x256.png">
@@ -13,6 +25,7 @@
       <q-field>
         <q-input
           name="password"
+          ref=password
           v-validate="'required|min:6'"
           v-if="found"
           v-model="password"
@@ -45,6 +58,7 @@
       <q-spinner-gears size="100px" color="primary"></q-spinner-gears>
     </q-inner-loading>
   </div>
+</div>
 </template>
 <script>
 export default {
@@ -56,7 +70,8 @@ export default {
       password: '',
       confirmPassword: '',
       user: {},
-      loading: false
+      loading: false,
+      success: false
     }
   },
   computed: {
@@ -102,19 +117,30 @@ export default {
           // create new user in firebase
           this.$store.dispatch('signUp', {email: this.email, password: this.password})
           .then(() => {
-            setTimeout(() => { 
-              this.$store.dispatch('updateCurrentUser', {uid: this.uid}) 
-            }, 3000)
-            this.$store.dispatch('getJobs')
-            this.$store.dispatch('getCompany')
-            // get hazards, substances and tasks
-            this.loading = false
-            this.$router.replace('/location')
+            this.$store.dispatch('updateCurrentUser', {uid: this.uid})
+            .then(() => {
+               this.success = true
+               this.loading = false
             })
+          })
         } catch (err) {
           this.loading = false
           console.log(err)
         }
+      })
+    },
+    login() {
+      this.loading = true
+      var getCompany = this.$store.dispatch('getCompany')
+      var getJobs = this.$store.dispatch('getJobs')
+      var getHazards = this.$store.dispatch('getHazards')
+      var getHazSubs = this.$store.dispatch('getHazSubs')
+      var getTaskAnalysis = this.$store.dispatch('getTaskAnalysis')
+      Promise.all([getCompany, getJobs, getHazards, getHazSubs, getTaskAnalysis])
+        .then(() => {
+          console.log('all promises complete')
+        this.loading = false
+        this.$router.replace('/location')
       })
     }
   }

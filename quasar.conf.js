@@ -81,7 +81,8 @@ module.exports = function (ctx) {
         'QItemSeparator',
         'QInnerLoading',
         'QSpinnerGears',
-        'QPullToRefresh'
+        'QPullToRefresh',
+        'QDialog'
       ],
       directives: [
         'Ripple',
